@@ -15,7 +15,8 @@ public class DemoRestClient extends AbstractRestClient {
     private static final String BASE_URL = "http://localhost:8080/demo/api";
     private static final String GET_ALL_PERSONS = "getAllPersons";
     private static final String CREATE_PERSON = "createPerson";
-    public static final String FILTER_PERSONS_BY_NAMES = "filterPersonsByNames";
+    private static final String FILTER_PERSONS_BY_NAMES = "filterPersonsByNames";
+    private static final String NEXT_PAGE = "next";
 
     private List<PersonClientModel> currentPersonData;
     private int cursorPersonData = 0;
@@ -137,4 +138,10 @@ public class DemoRestClient extends AbstractRestClient {
     /*
      *  The rest of the class is omitted for brevity
      */
+
+
+    public boolean isNextPageAvailable() throws IOException
+    {
+        return isLinkAvailable(NEXT_PAGE);
+    }
 }

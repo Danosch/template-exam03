@@ -132,4 +132,13 @@ public class TestDemoAppIT {
         client.getByFirstNameAndLastName( "Max", "Muster" );
         assertEquals( 1, client.personData().size() );
     }
+
+    @Test
+    public void test_next_page() throws IOException
+    {
+        this.client.fillDatabase();
+        this.client.start();
+        this.client.getAllPersons();
+        assertTrue( this.client.isNextPageAvailable());
+    }
 }

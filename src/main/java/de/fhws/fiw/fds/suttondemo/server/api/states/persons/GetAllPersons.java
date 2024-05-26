@@ -23,8 +23,6 @@ import de.fhws.fiw.fds.sutton.server.api.states.get.AbstractGetCollectionState;
 import de.fhws.fiw.fds.suttondemo.server.api.models.Person;
 import jakarta.ws.rs.core.Response;
 
-import java.util.Collection;
-
 public class GetAllPersons extends AbstractGetCollectionState<Response, Person> {
 
     public GetAllPersons(ServiceContext serviceContext, AbstractQuery<Response, Person> query) {
@@ -35,5 +33,6 @@ public class GetAllPersons extends AbstractGetCollectionState<Response, Person> 
     @Override
     protected void defineTransitionLinks() {
         addLink(PersonUri.REL_PATH, PersonRelTypes.CREATE_PERSON, getAcceptRequestHeader());
+        addLink(PersonUri.REL_PATH + "?firstname={FIRSTNAME}&lastname={LASTNAME}", PersonRelTypes.FILTER_BY_NAME, getAcceptRequestHeader());
     }
 }
