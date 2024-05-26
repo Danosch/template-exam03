@@ -21,6 +21,7 @@ import de.fhws.fiw.fds.sutton.server.api.serviceAdapters.responseAdapter.JerseyR
 import de.fhws.fiw.fds.sutton.server.api.services.ServiceContext;
 import de.fhws.fiw.fds.sutton.server.api.states.get.AbstractGetCollectionState;
 import de.fhws.fiw.fds.suttondemo.server.api.models.Person;
+import de.fhws.fiw.fds.suttondemo.server.api.queries.QueryByFirstAndLastName;
 import jakarta.ws.rs.core.Response;
 
 public class GetAllPersons extends AbstractGetCollectionState<Response, Person> {
@@ -34,5 +35,14 @@ public class GetAllPersons extends AbstractGetCollectionState<Response, Person> 
     protected void defineTransitionLinks() {
         addLink(PersonUri.REL_PATH, PersonRelTypes.CREATE_PERSON, getAcceptRequestHeader());
         addLink(PersonUri.REL_PATH + "?firstname={FIRSTNAME}&lastname={LASTNAME}", PersonRelTypes.FILTER_BY_NAME, getAcceptRequestHeader());
+
+        if (this.query instanceof QueryByFirstAndLastName) {
+            var query = (QueryByFirstAndLastName<Response>) this.query;
+
+            if (!query.getFirstName().isEmpty() || !query.getLastName().isEmpty()) {
+                addLink(PersonUri.REL_PATH + "?firstname={id}&lastname={id}&order={id}", PersonRelTypes.FILTER_BY_NAME_ORDER_BY_FIRSTNAME, getAcceptRequestHeader(), query.getFirstName(), query.getLastName(), query.getNextOrderAttributeForFirstName());
+                addLink(PersonUri.REL_PATH + "?firstname={id}&lastname={id}&order={id}", PersonRelTypes.FILTER_BY_NAME_ORDER_BY_LASTNAME, getAcceptRequestHeader(), query.getFirstName(), query.getLastName(), query.getNextOrderAttributeForLastName());
+            }
+        }
     }
 }

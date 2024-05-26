@@ -24,4 +24,6 @@ public interface PersonRelTypes {
     String DELETE_SINGLE_PERSON = "deletePerson";
     String GET_SINGLE_PERSON = "getPerson";
     String FILTER_BY_NAME = "filterPersonsByNames";
+    String FILTER_BY_NAME_ORDER_BY_FIRSTNAME = "filterPersonsByNamesOrderByFirstname";
+    String FILTER_BY_NAME_ORDER_BY_LASTNAME = "filterPersonsByNamesOrderByLastname";
 }

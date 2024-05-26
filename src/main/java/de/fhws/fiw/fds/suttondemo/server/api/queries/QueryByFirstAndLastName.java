@@ -35,6 +35,35 @@ public class QueryByFirstAndLastName<R> extends AbstractQuery<R, Person> {
         this.pagingBehavior = new PagingBehaviorUsingOffsetSize<>(offset, size);
     }
 
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public String getOrder() {
+        return order;
+    }
+
+    public String getOrderAttribute() {
+        return this.order.substring(1);
+    }
+
+    public String getNextOrderAttributeForLastName() {
+        return inverseSortingOrderOrDefault("lastname");
+    }
+
+    public String getNextOrderAttributeForFirstName() {
+        return inverseSortingOrderOrDefault("firstname");
+    }
+
+    @Override
+    protected CollectionModelResult<Person> executeQuery() {
+        return super.executeQuery();
+    }
+
     protected CollectionModelResult<Person> doExecuteQuery(SearchParameter searchParameter) throws DatabaseException {
         searchParameter.setOrderByAttribute(this.order);
         return DaoFactory.getInstance().getPersonDao().readByFirstNameAndLastName(
@@ -43,4 +72,15 @@ public class QueryByFirstAndLastName<R> extends AbstractQuery<R, Person> {
                 searchParameter);
     }
 
+    private String inverseSortingOrderOrDefault(String orderAttribute) {
+        if (getOrderAttribute().equals(orderAttribute)) {
+            return inverseSortingOrder();
+        } else {
+            return "%2B" + orderAttribute;
+        }
+    }
+
+    private String inverseSortingOrder() {
+        return this.order.startsWith("+") || this.order.startsWith("%2B") ? "-" + this.order.substring(1) : "%2B" + this.order.substring(1);
+    }
 }
