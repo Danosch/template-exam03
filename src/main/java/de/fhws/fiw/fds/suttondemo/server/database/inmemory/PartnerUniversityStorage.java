@@ -1,30 +1,43 @@
 package de.fhws.fiw.fds.suttondemo.server.database.inmemory;
 
+import de.fhws.fiw.fds.sutton.server.database.SearchParameter;
 import de.fhws.fiw.fds.sutton.server.database.inmemory.AbstractInMemoryStorage;
+import de.fhws.fiw.fds.sutton.server.database.inmemory.InMemoryPaging;
+import de.fhws.fiw.fds.sutton.server.database.results.CollectionModelResult;
 import de.fhws.fiw.fds.sutton.server.database.results.NoContentResult;
+import de.fhws.fiw.fds.sutton.server.database.results.SingleModelResult;
 import de.fhws.fiw.fds.suttondemo.server.api.models.PartnerUniversity;
 import de.fhws.fiw.fds.suttondemo.server.database.PartnerUniversityDao;
 
 public class PartnerUniversityStorage extends AbstractInMemoryStorage<PartnerUniversity> implements PartnerUniversityDao {
+
     @Override
-    public NoContentResult create(final PartnerUniversity model) {
-        this.storage.put(model.getId(), model);
-        return new NoContentResult();
+    public NoContentResult create(PartnerUniversity model) {
+        return super.create(model);
     }
 
     @Override
-    public NoContentResult update(final PartnerUniversity model) {
-        if (this.storage.containsKey(model.getId())) {
-            this.storage.put(model.getId(), model);
-            return new NoContentResult();
-        } else {
-            return new NoContentResult(); // Still return NoContentResult as operation assumes success unless exception
-        }
+    public SingleModelResult<PartnerUniversity> readById(long id) {
+        return super.readById(id);
     }
 
     @Override
-    public NoContentResult delete(final long id) {
-        this.storage.remove(id);
-        return new NoContentResult();
+    public NoContentResult update(PartnerUniversity model) {
+        return super.update(model);
+    }
+
+    @Override
+    public NoContentResult delete(long id) {
+        return super.delete(id);
+    }
+
+    @Override
+    public void resetDatabase() {
+        this.storage.clear();
+    }
+
+    @Override
+    public CollectionModelResult<PartnerUniversity> readAll(SearchParameter searchParameter) {
+        return InMemoryPaging.page(new CollectionModelResult<>(storage.values()), searchParameter.getOffset(), searchParameter.getSize());
     }
 }

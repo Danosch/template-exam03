@@ -1,11 +1,10 @@
 package de.fhws.fiw.fds.suttondemo.server.api.services;
 
+import de.fhws.fiw.fds.sutton.server.api.serviceAdapters.Exceptions.SuttonWebAppException;
 import de.fhws.fiw.fds.sutton.server.api.services.AbstractJerseyService;
-import de.fhws.fiw.fds.sutton.server.database.results.SingleModelResult;
 import de.fhws.fiw.fds.suttondemo.server.api.models.Module;
-import de.fhws.fiw.fds.suttondemo.server.api.models.PartnerUniversity;
+import de.fhws.fiw.fds.suttondemo.server.api.queries.QueryByUniversityId;
 import de.fhws.fiw.fds.suttondemo.server.api.states.modules.*;
-import de.fhws.fiw.fds.suttondemo.server.database.DaoFactory;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -13,45 +12,59 @@ import jakarta.ws.rs.core.Response;
 @Path("partneruniversities/{universityId}/modules")
 public class ModuleJerseyService extends AbstractJerseyService {
 
-    @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response createModuleForUniversity(@PathParam("universityId") long universityId, Module module) {
-        SingleModelResult<PartnerUniversity> result = DaoFactory.getInstance().getPartnerUniversityDao().readById(universityId);
-        if (result == null || result.getResult() == null) {
-            return Response.status(Response.Status.NOT_FOUND).entity("Partneruniversität nicht gefunden").build();
+    @GET
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public Response getAllModules(@PathParam("universityId") final long universityId) {
+        try {
+            return new GetAllModules(this.serviceContext, universityId, new QueryByUniversityId(universityId)).execute();
+        } catch (SuttonWebAppException e) {
+            throw new WebApplicationException(e.getExceptionMessage(), e.getStatus().getCode());
         }
-        module.setPartnerUniversity(result.getResult());
-        return new PostNewModule(this.serviceContext, universityId, module).execute();
     }
 
     @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getAllModulesForUniversity(@PathParam("universityId") long universityId,
-                                               @QueryParam("offset") @DefaultValue("0") int offset,
-                                               @QueryParam("size") @DefaultValue("20") int size) {
-        GetAllModulesForUniversity.AllModulesForUniversityQuery<Response> query = new GetAllModulesForUniversity.AllModulesForUniversityQuery<>(universityId, offset, size);
-        return new GetAllModulesForUniversity(this.serviceContext, query).execute();
+    @Path("{id: \\d+}")
+    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public Response getSingleModule(@PathParam("universityId") final long universityId, @PathParam("id") final long id) {
+        try {
+            return new GetSingleModule(this.serviceContext, universityId, id).execute();
+        } catch (SuttonWebAppException e) {
+            throw new WebApplicationException(e.getExceptionMessage(), e.getStatus().getCode());
+        }
     }
 
-    @GET
-    @Path("{moduleId}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getSingleModule(@PathParam("universityId") long universityId, @PathParam("moduleId") long moduleId) {
-        return new GetSingleModuleForUniversity(this.serviceContext, universityId, moduleId).execute();
+    @POST
+    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public Response createModule(@PathParam("universityId") final long universityId, final Module module) {
+        try {
+            module.setPartnerUniversityId(universityId);
+            return new PostNewModule(this.serviceContext, module).execute();
+        } catch (SuttonWebAppException e) {
+            throw new WebApplicationException(e.getExceptionMessage(), e.getStatus().getCode());
+        }
     }
 
     @PUT
-    @Path("{moduleId}")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response updateModuleForUniversity(@PathParam("universityId") long universityId, @PathParam("moduleId") long moduleId, Module module) {
-        return new PutSingleModuleForUniversity(this.serviceContext, universityId, moduleId, module).execute();
+    @Path("{id: \\d+}")
+    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public Response updateModule(@PathParam("universityId") final long universityId, @PathParam("id") final long id, final Module module) {
+        try {
+            module.setId(id);
+            module.setPartnerUniversityId(universityId);
+            return new PutSingleModule(this.serviceContext, module).execute();
+        } catch (SuttonWebAppException e) {
+            throw new WebApplicationException(e.getExceptionMessage(), e.getStatus().getCode());
+        }
     }
 
     @DELETE
-    @Path("{moduleId}")
-    public Response deleteModule(@PathParam("universityId") long universityId, @PathParam("moduleId") long moduleId) {
-        return new DeleteSingleModuleForUniversity(this.serviceContext, universityId, moduleId).execute();
+    @Path("{id: \\d+}")
+    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public Response deleteModule(@PathParam("universityId") final long universityId, @PathParam("id") final long id) {
+        try {
+            return new DeleteSingleModule(this.serviceContext, id).execute();
+        } catch (SuttonWebAppException e) {
+            throw new WebApplicationException(e.getExceptionMessage(), e.getStatus().getCode());
+        }
     }
 }

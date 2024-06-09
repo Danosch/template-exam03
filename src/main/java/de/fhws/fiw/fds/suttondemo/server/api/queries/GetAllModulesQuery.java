@@ -15,6 +15,6 @@ public class GetAllModulesQuery extends AbstractQuery<CollectionModelResult<Modu
 
     @Override
     protected CollectionModelResult<Module> doExecuteQuery(SearchParameter searchParameter) {
-        return DaoFactory.getInstance().getModuleDao().readAllByUniversityId(universityId);
+        return DaoFactory.getInstance().getModuleDao().readByUniversityId(universityId, searchParameter);
     }
 }

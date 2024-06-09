@@ -5,8 +5,8 @@ import de.fhws.fiw.fds.sutton.client.converters.ClientLinkJsonConverter;
 import de.fhws.fiw.fds.sutton.client.model.AbstractClientModel;
 import de.fhws.fiw.fds.sutton.client.utils.Link;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 public class PartnerUniversityClientModel extends AbstractClientModel {
     private String universityName;

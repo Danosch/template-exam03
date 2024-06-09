@@ -5,7 +5,6 @@ import de.fhws.fiw.fds.sutton.server.api.services.AbstractJerseyService;
 import de.fhws.fiw.fds.suttondemo.server.api.models.PartnerUniversity;
 import de.fhws.fiw.fds.suttondemo.server.api.queries.AllPartnerUniversities;
 import de.fhws.fiw.fds.suttondemo.server.api.states.partneruniversities.*;
-import de.fhws.fiw.fds.suttondemo.server.database.DaoFactory;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
