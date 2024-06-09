@@ -3,8 +3,9 @@ package de.fhws.fiw.fds.suttondemo.server.api.services;
 import de.fhws.fiw.fds.sutton.server.api.serviceAdapters.Exceptions.SuttonWebAppException;
 import de.fhws.fiw.fds.sutton.server.api.services.AbstractJerseyService;
 import de.fhws.fiw.fds.suttondemo.server.api.models.PartnerUniversity;
-import de.fhws.fiw.fds.suttondemo.server.api.states.partneruniversities.*;
 import de.fhws.fiw.fds.suttondemo.server.api.queries.AllPartnerUniversities;
+import de.fhws.fiw.fds.suttondemo.server.api.states.partneruniversities.*;
+import de.fhws.fiw.fds.suttondemo.server.database.DaoFactory;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -62,7 +63,6 @@ public class PartnerUniversityJerseyService extends AbstractJerseyService {
 
     @DELETE
     @Path("{id: \\d+}")
-    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response deleteSinglePartnerUniversity(@PathParam("id") final long id) {
         try {
             return new DeleteSinglePartnerUniversity(this.serviceContext, id).execute();

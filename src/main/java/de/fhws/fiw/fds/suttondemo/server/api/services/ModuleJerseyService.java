@@ -1,11 +1,11 @@
 package de.fhws.fiw.fds.suttondemo.server.api.services;
 
 import de.fhws.fiw.fds.sutton.server.api.services.AbstractJerseyService;
+import de.fhws.fiw.fds.sutton.server.database.results.SingleModelResult;
 import de.fhws.fiw.fds.suttondemo.server.api.models.Module;
 import de.fhws.fiw.fds.suttondemo.server.api.models.PartnerUniversity;
 import de.fhws.fiw.fds.suttondemo.server.api.states.modules.*;
 import de.fhws.fiw.fds.suttondemo.server.database.DaoFactory;
-import de.fhws.fiw.fds.sutton.server.database.results.SingleModelResult;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
