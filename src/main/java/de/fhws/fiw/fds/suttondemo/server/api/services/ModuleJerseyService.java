@@ -51,7 +51,7 @@ public class ModuleJerseyService extends AbstractJerseyService {
         try {
             module.setId(id);
             module.setPartnerUniversityId(universityId);
-            return new PutSingleModule(this.serviceContext, module).execute();
+            return new PutSingleModule(this.serviceContext, id, module).execute();
         } catch (SuttonWebAppException e) {
             throw new WebApplicationException(e.getExceptionMessage(), e.getStatus().getCode());
         }
@@ -59,7 +59,6 @@ public class ModuleJerseyService extends AbstractJerseyService {
 
     @DELETE
     @Path("{id: \\d+}")
-    @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response deleteModule(@PathParam("universityId") final long universityId, @PathParam("id") final long id) {
         try {
             return new DeleteSingleModule(this.serviceContext, id).execute();

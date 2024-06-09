@@ -1,6 +1,7 @@
 package de.fhws.fiw.fds.suttondemo.server.api.states.modules;
 
 import de.fhws.fiw.fds.sutton.server.api.caching.CachingUtils;
+import de.fhws.fiw.fds.sutton.server.api.serviceAdapters.responseAdapter.JerseyResponse;
 import de.fhws.fiw.fds.sutton.server.api.services.ServiceContext;
 import de.fhws.fiw.fds.sutton.server.api.states.put.AbstractPutState;
 import de.fhws.fiw.fds.sutton.server.database.results.NoContentResult;
@@ -11,13 +12,15 @@ import de.fhws.fiw.fds.suttondemo.server.database.DaoFactory;
 import jakarta.ws.rs.core.Response;
 
 public class PutSingleModule extends AbstractPutState<Response, Module> {
-    public PutSingleModule(ServiceContext serviceContext, Module modelToUpdate) {
-        super(serviceContext, modelToUpdate.getId(), modelToUpdate);
+
+    public PutSingleModule(ServiceContext serviceContext, long id, Module modelToUpdate) {
+        super(serviceContext, id, modelToUpdate);
+        this.suttonResponse = new JerseyResponse<>();
     }
 
     @Override
     protected SingleModelResult<Module> loadModel() {
-        return DaoFactory.getInstance().getModuleDao().readById(this.modelToUpdate.getId());
+        return DaoFactory.getInstance().getModuleDao().readById(this.modelToUpdate.getPartnerUniversityId(), this.modelToUpdate.getId());
     }
 
     @Override

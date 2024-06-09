@@ -4,14 +4,18 @@ import de.fhws.fiw.fds.sutton.server.database.SearchParameter;
 import de.fhws.fiw.fds.sutton.server.database.inmemory.AbstractInMemoryStorage;
 import de.fhws.fiw.fds.sutton.server.database.inmemory.InMemoryPaging;
 import de.fhws.fiw.fds.sutton.server.database.results.CollectionModelResult;
+import de.fhws.fiw.fds.sutton.server.database.results.NoContentResult;
 import de.fhws.fiw.fds.sutton.server.database.results.SingleModelResult;
 import de.fhws.fiw.fds.suttondemo.server.api.models.Module;
 import de.fhws.fiw.fds.suttondemo.server.database.ModuleDao;
 
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class ModuleStorage extends AbstractInMemoryStorage<Module> implements ModuleDao {
+
+    private final AtomicLong nextId = new AtomicLong(1);
 
     @Override
     public CollectionModelResult<Module> readByUniversityId(long universityId, SearchParameter searchParameter) {
@@ -32,5 +36,24 @@ public class ModuleStorage extends AbstractInMemoryStorage<Module> implements Mo
                 .filter(module -> module.getPartnerUniversityId() == universityId && module.getId() == moduleId)
                 .findFirst().orElse(null);
         return new SingleModelResult<>(result);
+    }
+
+    @Override
+    public NoContentResult create(final Module model) {
+        model.setId(nextId.getAndIncrement());
+        this.storage.put(model.getId(), model);
+        return new NoContentResult();
+    }
+
+    @Override
+    public NoContentResult update(final Module model) {
+        this.storage.put(model.getId(), model);
+        return new NoContentResult();
+    }
+
+    @Override
+    public NoContentResult delete(long id) {
+        this.storage.remove(id);
+        return new NoContentResult();
     }
 }

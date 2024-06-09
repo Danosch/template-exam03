@@ -1,5 +1,6 @@
 package de.fhws.fiw.fds.suttondemo.server.api.states.modules;
 
+import de.fhws.fiw.fds.sutton.server.api.serviceAdapters.responseAdapter.JerseyResponse;
 import de.fhws.fiw.fds.sutton.server.api.services.ServiceContext;
 import de.fhws.fiw.fds.sutton.server.api.states.delete.AbstractDeleteState;
 import de.fhws.fiw.fds.sutton.server.database.results.NoContentResult;
@@ -9,13 +10,15 @@ import de.fhws.fiw.fds.suttondemo.server.database.DaoFactory;
 import jakarta.ws.rs.core.Response;
 
 public class DeleteSingleModule extends AbstractDeleteState<Response, Module> {
+
     public DeleteSingleModule(ServiceContext serviceContext, long modelIdToDelete) {
         super(serviceContext, modelIdToDelete);
+        this.suttonResponse = new JerseyResponse<>();
     }
 
     @Override
     protected SingleModelResult<Module> loadModel() {
-        return DaoFactory.getInstance().getModuleDao().readById(this.modelIdToDelete);
+        return DaoFactory.getInstance().getModuleDao().readById(0, this.modelIdToDelete); // Dummy universityId 0
     }
 
     @Override
@@ -25,6 +28,6 @@ public class DeleteSingleModule extends AbstractDeleteState<Response, Module> {
 
     @Override
     protected void defineTransitionLinks() {
-        addLink(ModuleUri.REL_PATH, ModuleRelTypes.GET_ALL_MODULES, getAcceptRequestHeader(), this.modelIdToDelete);
+        // Add necessary links here
     }
 }
