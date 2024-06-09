@@ -8,7 +8,7 @@ import java.io.IOException;
 
 public class PartnerUniversityWebClient {
 
-    private GenericWebClient<PartnerUniversityClientModel> client;
+    private final GenericWebClient<PartnerUniversityClientModel> client;
 
     public PartnerUniversityWebClient() {
         this.client = new GenericWebClient<>();

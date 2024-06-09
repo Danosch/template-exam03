@@ -1,45 +1,44 @@
 package de.fhws.fiw.fds.suttondemo.server.api.states.modules;
 
 import de.fhws.fiw.fds.sutton.server.api.caching.CachingUtils;
+import de.fhws.fiw.fds.sutton.server.api.caching.EtagGenerator;
 import de.fhws.fiw.fds.sutton.server.api.serviceAdapters.responseAdapter.JerseyResponse;
 import de.fhws.fiw.fds.sutton.server.api.services.ServiceContext;
-import de.fhws.fiw.fds.sutton.server.api.states.put.AbstractPutState;
-import de.fhws.fiw.fds.sutton.server.database.results.NoContentResult;
+import de.fhws.fiw.fds.sutton.server.api.states.get.AbstractGetState;
 import de.fhws.fiw.fds.sutton.server.database.results.SingleModelResult;
 import de.fhws.fiw.fds.sutton.server.models.AbstractModel;
 import de.fhws.fiw.fds.suttondemo.server.api.models.Module;
 import de.fhws.fiw.fds.suttondemo.server.database.DaoFactory;
 import jakarta.ws.rs.core.Response;
 
-public class PutSingleModule extends AbstractPutState<Response, Module> {
+public class GetSingleModuleForUniversity extends AbstractGetState<Response, Module> {
+    private long universityId;
 
-    public PutSingleModule(ServiceContext serviceContext, long requestedId, Module modelToUpdate) {
-        super(serviceContext, requestedId, modelToUpdate);
+    public GetSingleModuleForUniversity(ServiceContext serviceContext, long universityId, long requestedId) {
+        super(serviceContext, requestedId);
+        this.universityId = universityId;
         this.suttonResponse = new JerseyResponse<>();
     }
 
     @Override
     protected SingleModelResult<Module> loadModel() {
-        return DaoFactory.getInstance().getModuleDao().readById(this.modelToUpdate.getId());
+        return DaoFactory.getInstance().getModuleDao().readByIdAndUniversityId(this.requestedId, this.universityId);
     }
 
     @Override
-    protected NoContentResult updateModel() {
-        return DaoFactory.getInstance().getModuleDao().update(this.modelToUpdate);
-    }
-
-    @Override
-    protected boolean clientDoesNotKnowCurrentModelState(AbstractModel modelFromDatabase) {
+    protected boolean clientKnowsCurrentModelState(AbstractModel modelFromDatabase) {
         return this.suttonRequest.clientKnowsCurrentModel(modelFromDatabase);
     }
 
     @Override
     protected void defineHttpCaching() {
+        final String eTagOfModel = EtagGenerator.createEtag(this.requestedModel.getResult());
+        this.suttonResponse.entityTag(eTagOfModel);
         this.suttonResponse.cacheControl(CachingUtils.create30SecondsPublicCaching());
     }
 
     @Override
     protected void defineTransitionLinks() {
-        addLink(ModuleUri.REL_PATH_ID, ModuleRelTypes.GET_SINGLE_MODULE, getAcceptRequestHeader(), this.modelToUpdate.getId());
+        addLink(String.format("%s/%d/modules/%d", ModuleUri.REL_PATH, universityId, requestedId), ModuleRelTypes.UPDATE_SINGLE_MODULE, getAcceptRequestHeader());
     }
 }

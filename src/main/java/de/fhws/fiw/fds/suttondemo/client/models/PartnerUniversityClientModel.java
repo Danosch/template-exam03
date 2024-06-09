@@ -5,28 +5,30 @@ import de.fhws.fiw.fds.sutton.client.converters.ClientLinkJsonConverter;
 import de.fhws.fiw.fds.sutton.client.model.AbstractClientModel;
 import de.fhws.fiw.fds.sutton.client.utils.Link;
 
-import java.time.LocalDate;
+import java.util.List;
+import java.util.ArrayList;
 
 public class PartnerUniversityClientModel extends AbstractClientModel {
-    private String name;
+    private String universityName;
     private String country;
     private String departmentName;
     private String websiteUrl;
     private String contactPerson;
     private int outgoingStudents;
     private int incomingStudents;
-    private LocalDate nextSpringSemesterStart;
-    private LocalDate nextAutumnSemesterStart;
+    private String nextSpringSemesterStart;
+    private String nextAutumnSemesterStart;
+    private List<ModuleClientModel> modules = new ArrayList<>();
 
     @JsonDeserialize(using = ClientLinkJsonConverter.class)
     private transient Link selfLink;
 
-    public String getName() {
-        return name;
+    public String getUniversityName() {
+        return universityName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setUniversityName(String universityName) {
+        this.universityName = universityName;
     }
 
     public String getCountry() {
@@ -77,20 +79,28 @@ public class PartnerUniversityClientModel extends AbstractClientModel {
         this.incomingStudents = incomingStudents;
     }
 
-    public LocalDate getNextSpringSemesterStart() {
+    public String getNextSpringSemesterStart() {
         return nextSpringSemesterStart;
     }
 
-    public void setNextSpringSemesterStart(LocalDate nextSpringSemesterStart) {
+    public void setNextSpringSemesterStart(String nextSpringSemesterStart) {
         this.nextSpringSemesterStart = nextSpringSemesterStart;
     }
 
-    public LocalDate getNextAutumnSemesterStart() {
+    public String getNextAutumnSemesterStart() {
         return nextAutumnSemesterStart;
     }
 
-    public void setNextAutumnSemesterStart(LocalDate nextAutumnSemesterStart) {
+    public void setNextAutumnSemesterStart(String nextAutumnSemesterStart) {
         this.nextAutumnSemesterStart = nextAutumnSemesterStart;
+    }
+
+    public List<ModuleClientModel> getModules() {
+        return modules;
+    }
+
+    public void setModules(List<ModuleClientModel> modules) {
+        this.modules = modules;
     }
 
     public Link getSelfLink() {

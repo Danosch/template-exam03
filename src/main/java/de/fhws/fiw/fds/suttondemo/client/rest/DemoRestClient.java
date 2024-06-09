@@ -1,7 +1,6 @@
 package de.fhws.fiw.fds.suttondemo.client.rest;
 
 import de.fhws.fiw.fds.sutton.client.rest2.AbstractRestClient;
-import de.fhws.fiw.fds.suttondemo.client.models.LocationClientModel;
 import de.fhws.fiw.fds.suttondemo.client.models.ModuleClientModel;
 import de.fhws.fiw.fds.suttondemo.client.models.PartnerUniversityClientModel;
 import de.fhws.fiw.fds.suttondemo.client.models.PersonClientModel;
@@ -41,9 +40,9 @@ public class DemoRestClient extends AbstractRestClient {
         this.client = new PersonWebClient();
         this.partnerUniversityClient = new PartnerUniversityWebClient();
         this.moduleClient = new ModuleWebClient();
-        this.currentPersonData = Collections.EMPTY_LIST;
-        this.currentPartnerUniversityData = Collections.EMPTY_LIST;
-        this.currentModuleData = Collections.EMPTY_LIST;
+        this.currentPersonData = Collections.emptyList();
+        this.currentPartnerUniversityData = Collections.emptyList();
+        this.currentModuleData = Collections.emptyList();
     }
 
     public void resetDatabase() throws IOException {
@@ -63,7 +62,7 @@ public class DemoRestClient extends AbstractRestClient {
     public void createPerson(PersonClientModel person) throws IOException {
         if (isCreatePersonAllowed()) {
             processResponse(this.client.postNewPerson(getUrl(CREATE_PERSON), person), (response) -> {
-                this.currentPersonData = Collections.EMPTY_LIST;
+                this.currentPersonData = Collections.emptyList();
                 this.cursorPersonData = 0;
             });
         } else {
@@ -78,7 +77,7 @@ public class DemoRestClient extends AbstractRestClient {
     public void getAllPersons() throws IOException {
         if (isGetAllPersonsAllowed()) {
             processResponse(this.client.getCollectionOfPersons(getUrl(GET_ALL_PERSONS)), (response) -> {
-                this.currentPersonData = new LinkedList(response.getResponseData());
+                this.currentPersonData = new LinkedList<>(response.getResponseData());
                 this.cursorPersonData = 0;
             });
         } else {
@@ -122,7 +121,7 @@ public class DemoRestClient extends AbstractRestClient {
 
     private void getSinglePerson(String url) throws IOException {
         processResponse(this.client.getSinglePerson(url), (response) -> {
-            this.currentPersonData = new LinkedList(response.getResponseData());
+            this.currentPersonData = new LinkedList<>(response.getResponseData());
             this.cursorPersonData = 0;
         });
     }
@@ -134,7 +133,7 @@ public class DemoRestClient extends AbstractRestClient {
     public void createPartnerUniversity(PartnerUniversityClientModel partnerUniversity) throws IOException {
         if (isCreatePartnerUniversityAllowed()) {
             processResponse(this.partnerUniversityClient.postNewPartnerUniversity(getUrl(CREATE_PARTNER_UNIVERSITY), partnerUniversity), (response) -> {
-                this.currentPartnerUniversityData = Collections.EMPTY_LIST;
+                this.currentPartnerUniversityData = Collections.emptyList();
                 this.cursorPartnerUniversityData = 0;
             });
         } else {
@@ -149,7 +148,7 @@ public class DemoRestClient extends AbstractRestClient {
     public void getAllPartnerUniversities() throws IOException {
         if (isGetAllPartnerUniversitiesAllowed()) {
             processResponse(this.partnerUniversityClient.getCollectionOfPartnerUniversities(getUrl(GET_ALL_PARTNER_UNIVERSITIES)), (response) -> {
-                this.currentPartnerUniversityData = new LinkedList(response.getResponseData());
+                this.currentPartnerUniversityData = new LinkedList<>(response.getResponseData());
                 this.cursorPartnerUniversityData = 0;
             });
         } else {
@@ -193,7 +192,7 @@ public class DemoRestClient extends AbstractRestClient {
 
     private void getSinglePartnerUniversity(String url) throws IOException {
         processResponse(this.partnerUniversityClient.getSinglePartnerUniversity(url), (response) -> {
-            this.currentPartnerUniversityData = new LinkedList(response.getResponseData());
+            this.currentPartnerUniversityData = new LinkedList<>(response.getResponseData());
             this.cursorPartnerUniversityData = 0;
         });
     }
@@ -205,7 +204,7 @@ public class DemoRestClient extends AbstractRestClient {
     public void createModule(ModuleClientModel module) throws IOException {
         if (isCreateModuleAllowed()) {
             processResponse(this.moduleClient.postNewModule(getUrl(CREATE_MODULE), module), (response) -> {
-                this.currentModuleData = Collections.EMPTY_LIST;
+                this.currentModuleData = Collections.emptyList();
                 this.cursorModuleData = 0;
             });
         } else {
@@ -220,7 +219,7 @@ public class DemoRestClient extends AbstractRestClient {
     public void getAllModules() throws IOException {
         if (isGetAllModulesAllowed()) {
             processResponse(this.moduleClient.getCollectionOfModules(getUrl(GET_ALL_MODULES)), (response) -> {
-                this.currentModuleData = new LinkedList(response.getResponseData());
+                this.currentModuleData = new LinkedList<>(response.getResponseData());
                 this.cursorModuleData = 0;
             });
         } else {
@@ -264,7 +263,7 @@ public class DemoRestClient extends AbstractRestClient {
 
     private void getSingleModule(String url) throws IOException {
         processResponse(this.moduleClient.getSingleModule(url), (response) -> {
-            this.currentModuleData = new LinkedList(response.getResponseData());
+            this.currentModuleData = new LinkedList<>(response.getResponseData());
             this.cursorModuleData = 0;
         });
     }

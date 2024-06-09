@@ -7,6 +7,8 @@ import de.fhws.fiw.fds.sutton.server.api.hyperlinks.annotations.SecondarySelfLin
 import de.fhws.fiw.fds.sutton.server.api.hyperlinks.annotations.SelfLink;
 import de.fhws.fiw.fds.sutton.server.models.AbstractModel;
 import jakarta.xml.bind.annotation.XmlRootElement;
+import java.util.ArrayList;
+import java.util.List;
 
 @JsonRootName("partnerUniversity")
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -22,6 +24,7 @@ public class PartnerUniversity extends AbstractModel {
     private int incomingStudents;
     private String nextSpringSemesterStart;
     private String nextAutumnSemesterStart;
+    private List<Module> modules = new ArrayList<>();
 
     @SecondarySelfLink(
             primaryPathElement = "partnerUniversities",
@@ -33,7 +36,7 @@ public class PartnerUniversity extends AbstractModel {
     private transient Link selfLink;
 
     public PartnerUniversity() {
-        // make JPA happy
+        // Constructor for JPA
     }
 
     public PartnerUniversity(String universityName, String country, String departmentName, String websiteUrl, String contactPerson, int outgoingStudents, int incomingStudents, String nextSpringSemesterStart, String nextAutumnSemesterStart) {
@@ -46,6 +49,13 @@ public class PartnerUniversity extends AbstractModel {
         this.incomingStudents = incomingStudents;
         this.nextSpringSemesterStart = nextSpringSemesterStart;
         this.nextAutumnSemesterStart = nextAutumnSemesterStart;
+    }
+
+    public void addModule(Module module) {
+        if(module != null) {
+            modules.add(module);
+            module.setPartnerUniversity(this);
+        }
     }
 
     public String getUniversityName() {
@@ -118,6 +128,14 @@ public class PartnerUniversity extends AbstractModel {
 
     public void setNextAutumnSemesterStart(String nextAutumnSemesterStart) {
         this.nextAutumnSemesterStart = nextAutumnSemesterStart;
+    }
+
+    public List<Module> getModules() {
+        return modules;
+    }
+
+    public void setModules(List<Module> modules) {
+        this.modules = modules;
     }
 
     public Link getSelfLinkOnSecond() {

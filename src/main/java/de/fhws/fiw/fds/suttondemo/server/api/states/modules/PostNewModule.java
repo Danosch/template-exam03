@@ -9,19 +9,23 @@ import de.fhws.fiw.fds.suttondemo.server.database.DaoFactory;
 import jakarta.ws.rs.core.Response;
 
 public class PostNewModule extends AbstractPostState<Response, Module> {
+    private long universityId;
 
-    public PostNewModule(ServiceContext serviceContext, Module modelToStore) {
+    public PostNewModule(ServiceContext serviceContext, long universityId, Module modelToStore) {
         super(serviceContext, modelToStore);
+        this.universityId = universityId;
         this.suttonResponse = new JerseyResponse<>();
     }
 
     @Override
     protected NoContentResult saveModel() {
-        return DaoFactory.getInstance().getModuleDao().create(this.modelToStore);
+        // Ensure that the module is associated with the correct university
+        modelToStore.setPartnerUniversity(DaoFactory.getInstance().getPartnerUniversityDao().readById(universityId).getResult());
+        return DaoFactory.getInstance().getModuleDao().create(modelToStore);
     }
 
     @Override
     protected void defineTransitionLinks() {
-
+        // Define any transition links after creating a module
     }
 }

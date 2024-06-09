@@ -28,9 +28,9 @@ public class GetDispatcher extends AbstractGetDispatcherState<Response> {
         addLink(PartnerUniversityUri.REL_PATH, PartnerUniversityRelTypes.GET_ALL_PARTNER_UNIVERSITIES, "get_all_partner_universities", getAcceptRequestHeader());
         addLink(PartnerUniversityUri.REL_PATH, PartnerUniversityRelTypes.CREATE_PARTNER_UNIVERSITY, "create_partner_university", getAcceptRequestHeader());
 
-        // Module links
-        addLink(ModuleUri.REL_PATH, ModuleRelTypes.GET_ALL_MODULES, "get_all_modules", getAcceptRequestHeader());
-        addLink(ModuleUri.REL_PATH, ModuleRelTypes.CREATE_MODULE, "create_module", getAcceptRequestHeader());
+        // Module links under a specific Partner University
+        addLink(PartnerUniversityUri.REL_PATH + "/{universityId}/modules", ModuleRelTypes.GET_ALL_MODULES, "get_all_modules_for_university", getAcceptRequestHeader());
+        addLink(PartnerUniversityUri.REL_PATH + "/{universityId}/modules", ModuleRelTypes.CREATE_MODULE, "create_module_for_university", getAcceptRequestHeader());
 
         // Pagination and Sorting Links for Partner Universities
         addLink(PartnerUniversityUri.REL_PATH + "?offset={offset}&size={size}", "self_partner_universities", getAcceptRequestHeader());
@@ -40,10 +40,10 @@ public class GetDispatcher extends AbstractGetDispatcherState<Response> {
         addLink(PartnerUniversityUri.REL_PATH + "?sort=name&order=desc", "sort_desc_partner_universities", getAcceptRequestHeader());
 
         // Pagination and Sorting Links for Modules
-        addLink(ModuleUri.REL_PATH + "?offset={offset}&size={size}", "self_modules", getAcceptRequestHeader());
-        addLink(ModuleUri.REL_PATH + "?offset={nextOffset}&size={size}", "next_modules", getAcceptRequestHeader());
-        addLink(ModuleUri.REL_PATH + "?offset={prevOffset}&size={size}", "prev_modules", getAcceptRequestHeader());
-        addLink(ModuleUri.REL_PATH + "?sort=moduleName&order=asc", "sort_asc_modules", getAcceptRequestHeader());
-        addLink(ModuleUri.REL_PATH + "?sort=moduleName&order=desc", "sort_desc_modules", getAcceptRequestHeader());
+        addLink(PartnerUniversityUri.REL_PATH + "/{universityId}/modules?offset={offset}&size={size}", "self_modules_for_university", getAcceptRequestHeader());
+        addLink(PartnerUniversityUri.REL_PATH + "/{universityId}/modules?offset={nextOffset}&size={size}", "next_modules_for_university", getAcceptRequestHeader());
+        addLink(PartnerUniversityUri.REL_PATH + "/{universityId}/modules?offset={prevOffset}&size={size}", "prev_modules_for_university", getAcceptRequestHeader());
+        addLink(PartnerUniversityUri.REL_PATH + "/{universityId}/modules?sort=moduleName&order=asc", "sort_asc_modules_for_university", getAcceptRequestHeader());
+        addLink(PartnerUniversityUri.REL_PATH + "/{universityId}/modules?sort=moduleName&order=desc", "sort_desc_modules_for_university", getAcceptRequestHeader());
     }
 }

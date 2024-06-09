@@ -9,7 +9,7 @@ public class ModuleClientModel extends AbstractClientModel {
     private String moduleName;
     private int semester;
     private int creditPoints;
-    private long universityId;
+    private PartnerUniversityClientModel partnerUniversity;
 
     @JsonDeserialize(using = ClientLinkJsonConverter.class)
     private transient Link selfLink;
@@ -38,12 +38,12 @@ public class ModuleClientModel extends AbstractClientModel {
         this.creditPoints = creditPoints;
     }
 
-    public long getUniversityId() {
-        return universityId;
+    public PartnerUniversityClientModel getPartnerUniversity() {
+        return partnerUniversity;
     }
 
-    public void setUniversityId(long universityId) {
-        this.universityId = universityId;
+    public void setPartnerUniversity(PartnerUniversityClientModel partnerUniversity) {
+        this.partnerUniversity = partnerUniversity;
     }
 
     public Link getSelfLink() {

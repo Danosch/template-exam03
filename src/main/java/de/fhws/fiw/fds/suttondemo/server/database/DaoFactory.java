@@ -3,7 +3,6 @@ package de.fhws.fiw.fds.suttondemo.server.database;
 import de.fhws.fiw.fds.suttondemo.server.database.inmemory.*;
 
 public class DaoFactory {
-
     private static DaoFactory INSTANCE;
 
     private final PersonDao personDao;
@@ -16,11 +15,11 @@ public class DaoFactory {
         this.personDao = new PersonStorage();
         this.locationDao = new LocationStorage();
         this.personLocationDao = new PersonLocationStorage(this.locationDao);
-        this.partnerUniversityDao = new PartnerUniversityStorage(); // Richtiger Klassenname verwendet
-        this.moduleDao = new ModuleStorage(); // Richtiger Klassenname verwendet
+        this.partnerUniversityDao = new PartnerUniversityStorage();
+        this.moduleDao = new ModuleStorage();
     }
 
-    public static DaoFactory getInstance() {
+    public static synchronized DaoFactory getInstance() {
         if (INSTANCE == null) {
             INSTANCE = new DaoFactory();
         }

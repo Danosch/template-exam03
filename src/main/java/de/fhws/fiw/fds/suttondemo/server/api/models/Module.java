@@ -15,18 +15,24 @@ public class Module extends AbstractModel {
     private String moduleName;
     private int semester;
     private int creditPoints;
-    private long universityId;
+    private PartnerUniversity partnerUniversity;
 
     @SelfLink(pathElement = "modules")
     private transient Link selfLink;
 
-    public Module() {}
+    public Module() {
+        // Constructor for JPA
+    }
 
-    public Module(String moduleName, int semester, int creditPoints, long universityId) {
+    public Module(String moduleName, int semester, int creditPoints, PartnerUniversity partnerUniversity) {
+        if (partnerUniversity == null) {
+            throw new IllegalArgumentException("Module cannot exist without a partner university.");
+        }
         this.moduleName = moduleName;
         this.semester = semester;
         this.creditPoints = creditPoints;
-        this.universityId = universityId;
+        this.partnerUniversity = partnerUniversity;
+        partnerUniversity.addModule(this);
     }
 
     public String getModuleName() {
@@ -53,12 +59,12 @@ public class Module extends AbstractModel {
         this.creditPoints = creditPoints;
     }
 
-    public long getUniversityId() {
-        return universityId;
+    public PartnerUniversity getPartnerUniversity() {
+        return partnerUniversity;
     }
 
-    public void setUniversityId(long universityId) {
-        this.universityId = universityId;
+    public void setPartnerUniversity(PartnerUniversity partnerUniversity) {
+        this.partnerUniversity = partnerUniversity;
     }
 
     public Link getSelfLink() {

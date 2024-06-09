@@ -8,7 +8,7 @@ import java.io.IOException;
 
 public class ModuleWebClient {
 
-    private GenericWebClient<ModuleClientModel> client;
+    private final GenericWebClient<ModuleClientModel> client;
 
     public ModuleWebClient() {
         this.client = new GenericWebClient<>();

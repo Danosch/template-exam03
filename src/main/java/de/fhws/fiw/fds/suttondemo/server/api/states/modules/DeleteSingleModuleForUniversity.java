@@ -9,16 +9,18 @@ import de.fhws.fiw.fds.suttondemo.server.api.models.Module;
 import de.fhws.fiw.fds.suttondemo.server.database.DaoFactory;
 import jakarta.ws.rs.core.Response;
 
-public class DeleteSingleModule extends AbstractDeleteState<Response, Module> {
+public class DeleteSingleModuleForUniversity extends AbstractDeleteState<Response, Module> {
+    private long universityId;
 
-    public DeleteSingleModule(ServiceContext serviceContext, long modelIdToDelete) {
+    public DeleteSingleModuleForUniversity(ServiceContext serviceContext, long universityId, long modelIdToDelete) {
         super(serviceContext, modelIdToDelete);
+        this.universityId = universityId;
         this.suttonResponse = new JerseyResponse<>();
     }
 
     @Override
     protected SingleModelResult<Module> loadModel() {
-        return DaoFactory.getInstance().getModuleDao().readById(this.modelIdToDelete);
+        return DaoFactory.getInstance().getModuleDao().readByIdAndUniversityId(this.modelIdToDelete, this.universityId);
     }
 
     @Override
