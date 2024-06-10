@@ -5,8 +5,8 @@ import de.fhws.fiw.fds.sutton.client.converters.ClientLinkJsonConverter;
 import de.fhws.fiw.fds.sutton.client.model.AbstractClientModel;
 import de.fhws.fiw.fds.sutton.client.utils.Link;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.ArrayList;
 
 public class PartnerUniversityClientModel extends AbstractClientModel {
     private String universityName;
@@ -23,6 +23,7 @@ public class PartnerUniversityClientModel extends AbstractClientModel {
     @JsonDeserialize(using = ClientLinkJsonConverter.class)
     private transient Link selfLink;
 
+    // Getters and Setters
     public String getUniversityName() {
         return universityName;
     }

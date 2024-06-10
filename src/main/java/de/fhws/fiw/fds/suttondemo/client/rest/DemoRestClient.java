@@ -201,10 +201,9 @@ public class DemoRestClient extends AbstractRestClient {
         return isLinkAvailable(CREATE_MODULE);
     }
 
-    public void createModule(long universityId, ModuleClientModel module) throws IOException {
+    public void createModule(ModuleClientModel module) throws IOException {
         if (isCreateModuleAllowed()) {
-            String url = BASE_URL + "/partneruniversities/" + universityId + "/modules";
-            processResponse(this.moduleClient.postNewModule(url, module), (response) -> {
+            processResponse(this.moduleClient.postNewModule(getUrl(CREATE_MODULE), module), (response) -> {
                 this.currentModuleData = Collections.emptyList();
                 this.cursorModuleData = 0;
             });
@@ -217,10 +216,9 @@ public class DemoRestClient extends AbstractRestClient {
         return isLinkAvailable(GET_ALL_MODULES);
     }
 
-    public void getAllModules(long universityId) throws IOException {
+    public void getAllModules() throws IOException {
         if (isGetAllModulesAllowed()) {
-            String url = BASE_URL + "/partneruniversities/" + universityId + "/modules";
-            processResponse(this.moduleClient.getCollectionOfModules(url), (response) -> {
+            processResponse(this.moduleClient.getCollectionOfModules(getUrl(GET_ALL_MODULES)), (response) -> {
                 this.currentModuleData = new LinkedList<>(response.getResponseData());
                 this.cursorModuleData = 0;
             });

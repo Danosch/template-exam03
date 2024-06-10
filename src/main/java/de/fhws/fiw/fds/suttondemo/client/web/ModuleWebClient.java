@@ -14,6 +14,10 @@ public class ModuleWebClient {
         this.client = new GenericWebClient<>();
     }
 
+    public ModuleWebResponse getDispatcher(String url) throws IOException {
+        return createResponse(this.client.sendGetSingleRequest(url));
+    }
+
     public ModuleWebResponse getSingleModule(String url) throws IOException {
         return createResponse(this.client.sendGetSingleRequest(url, ModuleClientModel.class));
     }
@@ -32,6 +36,10 @@ public class ModuleWebClient {
 
     public ModuleWebResponse deleteModule(String url) throws IOException {
         return createResponse(this.client.sendDeleteRequest(url));
+    }
+
+    public ModuleWebResponse resetDatabaseOnServer(String url) throws IOException {
+        return createResponse(this.client.sendGetSingleRequest(url + "/resetdatabase"));
     }
 
     private ModuleWebResponse createResponse(WebApiResponse<ModuleClientModel> response) {
