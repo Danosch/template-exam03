@@ -1,5 +1,6 @@
 package de.fhws.fiw.fds.suttondemo.server.api.states.modules;
 
+import de.fhws.fiw.fds.sutton.server.api.serviceAdapters.responseAdapter.JerseyResponse;
 import de.fhws.fiw.fds.sutton.server.api.services.ServiceContext;
 import de.fhws.fiw.fds.sutton.server.api.states.post.AbstractPostRelationState;
 import de.fhws.fiw.fds.sutton.server.database.results.NoContentResult;
@@ -10,6 +11,7 @@ import jakarta.ws.rs.core.Response;
 public class PostNewModule extends AbstractPostRelationState<Response, Module> {
     public PostNewModule(ServiceContext serviceContext, long primaryId, Module modelToStore) {
         super(serviceContext, primaryId, modelToStore);
+        this.suttonResponse = new JerseyResponse<>(); // Ensure suttonResponse is initialized
     }
 
     @Override

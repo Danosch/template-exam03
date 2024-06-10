@@ -9,13 +9,17 @@ import de.fhws.fiw.fds.suttondemo.server.api.models.Module;
 import de.fhws.fiw.fds.suttondemo.server.database.DaoFactory;
 
 public class QueryByUniversityId<R> extends AbstractRelationQuery<R, Module> {
-    public QueryByUniversityId(long primaryId) {
-        super(primaryId);
-        this.pagingBehavior = new PagingBehaviorUsingOffsetSize<>(0, 20);
+
+    private final long universityId;
+
+    public QueryByUniversityId(long universityId, int offset, int size) {
+        super(universityId);
+        this.universityId = universityId;
+        this.pagingBehavior = new PagingBehaviorUsingOffsetSize<>(offset, size);
     }
 
     @Override
     protected CollectionModelResult<Module> doExecuteQuery(SearchParameter searchParameter) throws DatabaseException {
-        return DaoFactory.getInstance().getModuleDao().readByUniversityId(this.primaryId, searchParameter);
+        return DaoFactory.getInstance().getModuleDao().readByUniversityId(this.universityId, searchParameter);
     }
 }

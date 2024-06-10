@@ -9,12 +9,11 @@ public class ModuleClientModel extends AbstractClientModel {
     private String moduleName;
     private int semester;
     private int creditPoints;
-    private long partnerUniversityId; // Partner University ID
+    private long partnerUniversityId;
 
     @JsonDeserialize(using = ClientLinkJsonConverter.class)
     private transient Link selfLink;
 
-    // Getters and Setters
     public String getModuleName() {
         return moduleName;
     }

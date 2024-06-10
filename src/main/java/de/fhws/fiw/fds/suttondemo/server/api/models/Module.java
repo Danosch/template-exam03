@@ -6,9 +6,8 @@ public class Module extends AbstractModel {
     private String moduleName;
     private int semester;
     private int creditPoints;
-    private long partnerUniversityId; // Partner University ID
+    private long partnerUniversityId;
 
-    // Getter and Setter methods
     public String getModuleName() {
         return moduleName;
     }

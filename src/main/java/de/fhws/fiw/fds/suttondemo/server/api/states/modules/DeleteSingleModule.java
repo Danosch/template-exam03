@@ -1,5 +1,6 @@
 package de.fhws.fiw.fds.suttondemo.server.api.states.modules;
 
+import de.fhws.fiw.fds.sutton.server.api.serviceAdapters.responseAdapter.JerseyResponse;
 import de.fhws.fiw.fds.sutton.server.api.services.ServiceContext;
 import de.fhws.fiw.fds.sutton.server.api.states.delete.AbstractDeleteRelationState;
 import de.fhws.fiw.fds.sutton.server.database.results.NoContentResult;
@@ -11,6 +12,7 @@ import jakarta.ws.rs.core.Response;
 public class DeleteSingleModule extends AbstractDeleteRelationState<Response, Module> {
     public DeleteSingleModule(ServiceContext serviceContext, long primaryId, long modelIdToDelete) {
         super(serviceContext, modelIdToDelete, primaryId);
+        this.suttonResponse = new JerseyResponse<>(); // Ensure suttonResponse is initialized
     }
 
     @Override

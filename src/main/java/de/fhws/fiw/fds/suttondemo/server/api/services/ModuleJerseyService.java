@@ -14,9 +14,11 @@ public class ModuleJerseyService extends AbstractJerseyService {
 
     @GET
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response getAllModules(@PathParam("universityId") final long universityId) {
+    public Response getAllModules(@PathParam("universityId") final long universityId,
+                                  @QueryParam("offset") @DefaultValue("0") int offset,
+                                  @QueryParam("size") @DefaultValue("20") int size) {
         try {
-            return new GetAllModules(this.serviceContext, universityId, new QueryByUniversityId(universityId)).execute();
+            return new GetAllModules(this.serviceContext, universityId, new QueryByUniversityId(universityId, offset, size)).execute();
         } catch (SuttonWebAppException e) {
             throw new WebApplicationException(e.getExceptionMessage(), e.getStatus().getCode());
         }
@@ -40,9 +42,15 @@ public class ModuleJerseyService extends AbstractJerseyService {
             module.setPartnerUniversityId(universityId);
             return new PostNewModule(this.serviceContext, universityId, module).execute();
         } catch (SuttonWebAppException e) {
+            e.printStackTrace(); // Log the exception
             throw new WebApplicationException(e.getExceptionMessage(), e.getStatus().getCode());
+        } catch (Exception e) {
+            e.printStackTrace(); // Log unexpected exceptions
+            throw new WebApplicationException("Internal server error", Response.Status.INTERNAL_SERVER_ERROR);
         }
     }
+
+
 
     @PUT
     @Path("{id: \\d+}")

@@ -1,5 +1,6 @@
 package de.fhws.fiw.fds.suttondemo.server.api.states.modules;
 
+import de.fhws.fiw.fds.sutton.server.api.serviceAdapters.responseAdapter.JerseyResponse;
 import de.fhws.fiw.fds.sutton.server.api.services.ServiceContext;
 import de.fhws.fiw.fds.sutton.server.api.states.get.AbstractGetRelationState;
 import de.fhws.fiw.fds.sutton.server.database.results.SingleModelResult;
@@ -10,6 +11,7 @@ import jakarta.ws.rs.core.Response;
 public class GetSingleModule extends AbstractGetRelationState<Response, Module> {
     public GetSingleModule(ServiceContext serviceContext, long primaryId, long requestedId) {
         super(serviceContext, primaryId, requestedId);
+        this.suttonResponse = new JerseyResponse<>(); // Ensure suttonResponse is initialized
     }
 
     @Override

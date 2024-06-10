@@ -23,7 +23,6 @@ public class PartnerUniversityClientModel extends AbstractClientModel {
     @JsonDeserialize(using = ClientLinkJsonConverter.class)
     private transient Link selfLink;
 
-    // Getters and Setters
     public String getUniversityName() {
         return universityName;
     }
