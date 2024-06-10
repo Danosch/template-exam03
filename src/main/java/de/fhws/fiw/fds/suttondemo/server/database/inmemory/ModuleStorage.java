@@ -9,13 +9,10 @@ import de.fhws.fiw.fds.sutton.server.database.results.SingleModelResult;
 import de.fhws.fiw.fds.suttondemo.server.api.models.Module;
 import de.fhws.fiw.fds.suttondemo.server.database.ModuleDao;
 
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class ModuleStorage extends AbstractInMemoryStorage<Module> implements ModuleDao {
-
-    private final AtomicLong nextId = new AtomicLong(1);
 
     @Override
     public CollectionModelResult<Module> readByUniversityId(long universityId, SearchParameter searchParameter) {
@@ -40,7 +37,7 @@ public class ModuleStorage extends AbstractInMemoryStorage<Module> implements Mo
 
     @Override
     public NoContentResult create(final Module model) {
-        model.setId(nextId.getAndIncrement());
+        model.setId(nextId());  // Verwenden Sie nextId() von der übergeordneten Klasse
         this.storage.put(model.getId(), model);
         return new NoContentResult();
     }
@@ -55,5 +52,16 @@ public class ModuleStorage extends AbstractInMemoryStorage<Module> implements Mo
     public NoContentResult delete(long id) {
         this.storage.remove(id);
         return new NoContentResult();
+    }
+
+    // Wenn nextId() in der Elternklasse private ist, verwenden Sie diese Methode, um es zugänglich zu machen
+    private long nextId() {
+        try {
+            java.lang.reflect.Method method = AbstractInMemoryStorage.class.getDeclaredMethod("nextId");
+            method.setAccessible(true);
+            return (long) method.invoke(this);
+        } catch (Exception e) {
+            throw new RuntimeException("Unable to access nextId method", e);
+        }
     }
 }

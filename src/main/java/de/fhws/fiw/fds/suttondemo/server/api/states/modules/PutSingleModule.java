@@ -1,26 +1,21 @@
 package de.fhws.fiw.fds.suttondemo.server.api.states.modules;
 
-import de.fhws.fiw.fds.sutton.server.api.caching.CachingUtils;
-import de.fhws.fiw.fds.sutton.server.api.serviceAdapters.responseAdapter.JerseyResponse;
 import de.fhws.fiw.fds.sutton.server.api.services.ServiceContext;
-import de.fhws.fiw.fds.sutton.server.api.states.put.AbstractPutState;
+import de.fhws.fiw.fds.sutton.server.api.states.put.AbstractPutRelationState;
 import de.fhws.fiw.fds.sutton.server.database.results.NoContentResult;
 import de.fhws.fiw.fds.sutton.server.database.results.SingleModelResult;
-import de.fhws.fiw.fds.sutton.server.models.AbstractModel;
 import de.fhws.fiw.fds.suttondemo.server.api.models.Module;
 import de.fhws.fiw.fds.suttondemo.server.database.DaoFactory;
 import jakarta.ws.rs.core.Response;
 
-public class PutSingleModule extends AbstractPutState<Response, Module> {
-
-    public PutSingleModule(ServiceContext serviceContext, long id, Module modelToUpdate) {
-        super(serviceContext, id, modelToUpdate);
-        this.suttonResponse = new JerseyResponse<>();
+public class PutSingleModule extends AbstractPutRelationState<Response, Module> {
+    public PutSingleModule(ServiceContext serviceContext, long primaryId, long requestedId, Module modelToUpdate) {
+        super(serviceContext, primaryId, requestedId, modelToUpdate);
     }
 
     @Override
     protected SingleModelResult<Module> loadModel() {
-        return DaoFactory.getInstance().getModuleDao().readById(this.modelToUpdate.getPartnerUniversityId(), this.modelToUpdate.getId());
+        return DaoFactory.getInstance().getModuleDao().readById(this.primaryId, this.requestedId);
     }
 
     @Override
@@ -29,17 +24,8 @@ public class PutSingleModule extends AbstractPutState<Response, Module> {
     }
 
     @Override
-    protected boolean clientDoesNotKnowCurrentModelState(AbstractModel modelFromDatabase) {
-        return this.suttonRequest.clientKnowsCurrentModel(modelFromDatabase);
-    }
-
-    @Override
-    protected void defineHttpCaching() {
-        this.suttonResponse.cacheControl(CachingUtils.create30SecondsPublicCaching());
-    }
-
-    @Override
     protected void defineTransitionLinks() {
-        addLink(ModuleUri.REL_PATH_ID, ModuleRelTypes.GET_SINGLE_MODULE, getAcceptRequestHeader(), this.modelToUpdate.getPartnerUniversityId(), this.modelToUpdate.getId());
+        addLink(ModuleUri.REL_PATH_ID, ModuleRelTypes.GET_SINGLE_MODULE, getAcceptRequestHeader(), this.primaryId, this.requestedId);
+        addLink(ModuleUri.REL_PATH, ModuleRelTypes.GET_ALL_MODULES, getAcceptRequestHeader(), this.primaryId);
     }
 }
