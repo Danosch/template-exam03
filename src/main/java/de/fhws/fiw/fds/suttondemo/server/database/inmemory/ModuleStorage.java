@@ -37,7 +37,7 @@ public class ModuleStorage extends AbstractInMemoryStorage<Module> implements Mo
 
     @Override
     public NoContentResult create(final Module model) {
-        model.setId(nextId());  // Verwenden Sie nextId() von der übergeordneten Klasse
+        model.setId(nextId());
         this.storage.put(model.getId(), model);
         return new NoContentResult();
     }
@@ -54,7 +54,6 @@ public class ModuleStorage extends AbstractInMemoryStorage<Module> implements Mo
         return new NoContentResult();
     }
 
-    // Wenn nextId() in der Elternklasse private ist, verwenden Sie diese Methode, um es zugänglich zu machen
     private long nextId() {
         try {
             java.lang.reflect.Method method = AbstractInMemoryStorage.class.getDeclaredMethod("nextId");

@@ -6,9 +6,9 @@ public class Module extends AbstractModel {
     private String moduleName;
     private int semester;
     private int creditPoints;
-    private long partnerUniversityId; // Fügen Sie dieses Attribut hinzu
+    private long partnerUniversityId; // Partner University ID
 
-    // Fügen Sie die Getter- und Setter-Methoden hinzu
+    // Getter and Setter methods
     public String getModuleName() {
         return moduleName;
     }
@@ -33,7 +33,7 @@ public class Module extends AbstractModel {
         this.creditPoints = creditPoints;
     }
 
-    public long getPartnerUniversityId() { // Diese Methode ist wichtig
+    public long getPartnerUniversityId() {
         return partnerUniversityId;
     }
 

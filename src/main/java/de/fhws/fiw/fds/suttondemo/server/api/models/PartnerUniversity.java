@@ -28,10 +28,10 @@ public class PartnerUniversity extends AbstractModel {
     @SelfLink(pathElement = "partneruniversities")
     private transient Link selfLink;
 
-    public PartnerUniversity() {
-        // Default constructor
-    }
+    // Default constructor
+    public PartnerUniversity() {}
 
+    // Parameterized constructor
     public PartnerUniversity(String universityName, String country, String departmentName, String websiteUrl, String contactPerson, int outgoingStudents, int incomingStudents, String nextSpringSemesterStart, String nextAutumnSemesterStart) {
         this.universityName = universityName;
         this.country = country;
@@ -44,6 +44,7 @@ public class PartnerUniversity extends AbstractModel {
         this.nextAutumnSemesterStart = nextAutumnSemesterStart;
     }
 
+    // Getter and Setter methods
     public String getUniversityName() {
         return universityName;
     }
