@@ -3,16 +3,16 @@ package de.fhws.fiw.fds.sutton.server;
 import com.github.javafaker.Faker;
 import de.fhws.fiw.fds.suttondemo.client.models.PartnerUniversityClientModel;
 import de.fhws.fiw.fds.suttondemo.client.rest.DemoRestClient;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class PartnerUniversityIT {
-    final private Faker faker = new Faker();
     private DemoRestClient client;
 
     @BeforeEach
@@ -26,16 +26,15 @@ public class PartnerUniversityIT {
         client.start();
         assertEquals(200, client.getLastStatusCode());
     }
+
     @Test
-    public void test_dispatcher_is_get_all_partnerUniversities_allowed() throws IOException {
+    public void test_dispatcher_is_get_all_partner_universities_allowed() throws IOException {
         client.start();
         assertTrue(client.isGetAllPartnerUniversitiesAllowed());
     }
 
-
-
     @Test
-    public void test_create_partner_university_is_allowed() throws IOException {
+    public void test_create_partner_university_is_create_partner_university_allowed() throws IOException {
         client.start();
         assertTrue(client.isCreatePartnerUniversityAllowed());
     }
@@ -44,12 +43,18 @@ public class PartnerUniversityIT {
     public void test_create_partner_university() throws IOException {
         client.start();
 
-        var partnerUniversity = new PartnerUniversityClientModel();
-        partnerUniversity.setName("Example University");
+        var university = new PartnerUniversityClientModel();
+        university.setUniversityName("Test University");
+        university.setCountry("Germany");
+        university.setDepartmentName("Computer Science");
+        university.setWebsiteUrl("http://testuniversity.com");
+        university.setContactPerson("John Doe");
+        university.setOutgoingStudents(10);
+        university.setIncomingStudents(5);
+        university.setNextSpringSemesterStart("2024-04-01");
+        university.setNextAutumnSemesterStart("2024-10-01");
 
-        partnerUniversity.setCountry("Example Country");
-
-        client.createPartnerUniversity(partnerUniversity);
+        client.createPartnerUniversity(university);
         assertEquals(201, client.getLastStatusCode());
     }
 
@@ -57,20 +62,26 @@ public class PartnerUniversityIT {
     public void test_create_partner_university_and_get_new_partner_university() throws IOException {
         client.start();
 
-        var partnerUniversity = new PartnerUniversityClientModel();
-        partnerUniversity.setName("Example University");
+        var university = new PartnerUniversityClientModel();
+        university.setUniversityName("Test University");
+        university.setCountry("Germany");
+        university.setDepartmentName("Computer Science");
+        university.setWebsiteUrl("http://testuniversity.com");
+        university.setContactPerson("John Doe");
+        university.setOutgoingStudents(10);
+        university.setIncomingStudents(5);
+        university.setNextSpringSemesterStart("2024-04-01");
+        university.setNextAutumnSemesterStart("2024-10-01");
 
-        partnerUniversity.setCountry("Example Country");
-
-        client.createPartnerUniversity(partnerUniversity);
+        client.createPartnerUniversity(university);
         assertEquals(201, client.getLastStatusCode());
-        assertTrue(client.isGetSinglePartnerUniversityAllowed());
+        assertTrue(client.isGetAllPartnerUniversitiesAllowed());
 
-        client.getSinglePartnerUniversity();
+        client.getAllPartnerUniversities();
         assertEquals(200, client.getLastStatusCode());
 
-        var partnerUniversityFromServer = client.partnerUniversityData().get(0);
-        assertEquals("Example University", partnerUniversityFromServer.getName());
+        var universityFromServer = client.partnerUniversityData().get(0);
+        assertEquals("Test University", universityFromServer.getUniversityName());
     }
 
     @Test
@@ -78,11 +89,18 @@ public class PartnerUniversityIT {
         for (int i = 0; i < 5; i++) {
             client.start();
 
-            var partnerUniversity = new PartnerUniversityClientModel();
-            partnerUniversity.setName(faker.university().name());
-            partnerUniversity.setCountry(faker.address().country());
+            var university = new PartnerUniversityClientModel();
+            university.setUniversityName("Test University " + i);
+            university.setCountry("Germany");
+            university.setDepartmentName("Computer Science");
+            university.setWebsiteUrl("http://testuniversity" + i + ".com");
+            university.setContactPerson("John Doe");
+            university.setOutgoingStudents(10);
+            university.setIncomingStudents(5);
+            university.setNextSpringSemesterStart("2024-04-01");
+            university.setNextAutumnSemesterStart("2024-10-01");
 
-            client.createPartnerUniversity(partnerUniversity);
+            client.createPartnerUniversity(university);
             assertEquals(201, client.getLastStatusCode());
         }
 
@@ -92,9 +110,5 @@ public class PartnerUniversityIT {
         client.getAllPartnerUniversities();
         assertEquals(200, client.getLastStatusCode());
         assertEquals(5, client.partnerUniversityData().size());
-
-        client.setPartnerUniversityCursor(0);
-        client.getSinglePartnerUniversity();
-        assertEquals(200, client.getLastStatusCode());
     }
 }

@@ -36,17 +36,19 @@ public class DemoRestClient extends AbstractRestClient {
     }
 
     public void resetDatabase() throws IOException {
-        processResponse(this.partnerUniversityClient.resetDatabaseOnServer(BASE_URL), (response) -> {
-        });
+        processResponse(this.partnerUniversityClient.resetDatabaseOnServer(BASE_URL), (response) -> {});
     }
 
     public void start() throws IOException {
         processResponse(this.partnerUniversityClient.getDispatcher(BASE_URL), (response) -> {
+            System.out.println("Dispatcher started, available links: " + isLinkAvailable(GET_ALL_PARTNER_UNIVERSITIES) + ", " + isLinkAvailable(CREATE_PARTNER_UNIVERSITY) + ", " + isLinkAvailable(GET_ALL_MODULES) + ", " + isLinkAvailable(CREATE_MODULE));
         });
     }
 
     public boolean isCreatePartnerUniversityAllowed() {
-        return isLinkAvailable(CREATE_PARTNER_UNIVERSITY);
+        boolean allowed = isLinkAvailable(CREATE_PARTNER_UNIVERSITY);
+        System.out.println("isCreatePartnerUniversityAllowed: " + allowed);
+        return allowed;
     }
 
     public void createPartnerUniversity(PartnerUniversityClientModel partnerUniversity) throws IOException {
@@ -56,12 +58,14 @@ public class DemoRestClient extends AbstractRestClient {
                 this.cursorPartnerUniversityData = 0;
             });
         } else {
-            throw new IllegalStateException();
+            throw new IllegalStateException("Create Partner University not allowed");
         }
     }
 
     public boolean isGetAllPartnerUniversitiesAllowed() {
-        return isLinkAvailable(GET_ALL_PARTNER_UNIVERSITIES);
+        boolean allowed = isLinkAvailable(GET_ALL_PARTNER_UNIVERSITIES);
+        System.out.println("isGetAllPartnerUniversitiesAllowed: " + allowed);
+        return allowed;
     }
 
     public void getAllPartnerUniversities() throws IOException {
@@ -71,12 +75,18 @@ public class DemoRestClient extends AbstractRestClient {
                 this.cursorPartnerUniversityData = 0;
             });
         } else {
-            throw new IllegalStateException();
+            throw new IllegalStateException("Get All Partner Universities not allowed");
         }
     }
 
+    public List<PartnerUniversityClientModel> partnerUniversityData() {
+        return currentPartnerUniversityData;
+    }
+
     public boolean isCreateModuleAllowed() {
-        return isLinkAvailable(CREATE_MODULE);
+        boolean allowed = isLinkAvailable(CREATE_MODULE);
+        System.out.println("isCreateModuleAllowed: " + allowed);
+        return allowed;
     }
 
     public void createModule(ModuleClientModel module) throws IOException {
@@ -86,12 +96,14 @@ public class DemoRestClient extends AbstractRestClient {
                 this.cursorModuleData = 0;
             });
         } else {
-            throw new IllegalStateException();
+            throw new IllegalStateException("Create Module not allowed");
         }
     }
 
     public boolean isGetAllModulesAllowed() {
-        return isLinkAvailable(GET_ALL_MODULES);
+        boolean allowed = isLinkAvailable(GET_ALL_MODULES);
+        System.out.println("isGetAllModulesAllowed: " + allowed);
+        return allowed;
     }
 
     public void getAllModules() throws IOException {
@@ -101,7 +113,7 @@ public class DemoRestClient extends AbstractRestClient {
                 this.cursorModuleData = 0;
             });
         } else {
-            throw new IllegalStateException();
+            throw new IllegalStateException("Get All Modules not allowed");
         }
     }
 
@@ -115,5 +127,21 @@ public class DemoRestClient extends AbstractRestClient {
         processResponse(this.moduleClient.deleteModule(url), (response) -> {
             // Update current module data if needed
         });
+    }
+
+    public void updatePartnerUniversity(String url, PartnerUniversityClientModel university) throws IOException {
+        processResponse(this.partnerUniversityClient.putPartnerUniversity(url, university), (response) -> {
+            // Update current partner university data if needed
+        });
+    }
+
+    public void deletePartnerUniversity(String url) throws IOException {
+        processResponse(this.partnerUniversityClient.deletePartnerUniversity(url), (response) -> {
+            // Update current partner university data if needed
+        });
+    }
+
+    public List<ModuleClientModel> moduleData() {
+        return currentModuleData;
     }
 }
