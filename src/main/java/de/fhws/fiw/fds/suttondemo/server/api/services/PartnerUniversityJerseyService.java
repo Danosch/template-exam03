@@ -53,6 +53,7 @@ public class PartnerUniversityJerseyService extends AbstractJerseyService {
     @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response updateSinglePartnerUniversity(@PathParam("id") final long id, final PartnerUniversity partnerUniversityModel) {
         try {
+            partnerUniversityModel.setId(id); // Ensure the model's ID is set
             return new PutSinglePartnerUniversity(this.serviceContext, id, partnerUniversityModel).execute();
         } catch (SuttonWebAppException e) {
             throw new WebApplicationException(Response.status(e.getStatus().getCode())

@@ -144,4 +144,7 @@ public class DemoRestClient extends AbstractRestClient {
     public List<ModuleClientModel> moduleData() {
         return currentModuleData;
     }
+    public String getModuleUrl(long moduleId) {
+        return String.format("%s/modules/%d", BASE_URL, moduleId);
+    }
 }
