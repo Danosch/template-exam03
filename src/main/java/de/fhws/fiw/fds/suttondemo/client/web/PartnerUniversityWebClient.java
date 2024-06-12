@@ -44,7 +44,6 @@ public class PartnerUniversityWebClient {
     }
 
     private PartnerUniversityWebResponse createResponse(WebApiResponse<PartnerUniversityClientModel> response) {
-        return new PartnerUniversityWebResponse(response.getResponseData(), response.getResponseHeaders(),
-                response.getLastStatusCode());
+        return new PartnerUniversityWebResponse(response.getResponseData(), response.getResponseHeaders(), response.getLastStatusCode());
     }
 }

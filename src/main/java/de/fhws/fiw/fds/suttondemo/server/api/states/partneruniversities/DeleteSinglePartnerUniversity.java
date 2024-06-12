@@ -23,6 +23,9 @@ public class DeleteSinglePartnerUniversity extends AbstractDeleteState<Response,
 
     @Override
     protected NoContentResult deleteModel() {
+        // Delete associated modules first
+        DaoFactory.getInstance().getModuleDao().deleteByUniversityId(this.modelIdToDelete);
+        // Then delete the partner university
         return DaoFactory.getInstance().getPartnerUniversityDao().delete(this.modelIdToDelete);
     }
 

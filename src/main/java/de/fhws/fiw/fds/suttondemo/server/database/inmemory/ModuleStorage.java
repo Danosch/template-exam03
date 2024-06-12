@@ -54,6 +54,17 @@ public class ModuleStorage extends AbstractInMemoryStorage<Module> implements Mo
         return new NoContentResult();
     }
 
+    @Override
+    public NoContentResult deleteByUniversityId(long universityId) {
+        storage.values().removeIf(module -> module.getPartnerUniversityId() == universityId);
+        return new NoContentResult();
+    }
+
+    @Override
+    public void resetDatabase() {
+        this.storage.clear();
+    }
+
     private long nextId() {
         try {
             java.lang.reflect.Method method = AbstractInMemoryStorage.class.getDeclaredMethod("nextId");

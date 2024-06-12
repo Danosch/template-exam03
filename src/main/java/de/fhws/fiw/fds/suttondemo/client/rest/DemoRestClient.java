@@ -15,8 +15,12 @@ public class DemoRestClient extends AbstractRestClient {
     private static final String BASE_URL = "http://localhost:8080/demo/api";
     private static final String GET_ALL_PARTNER_UNIVERSITIES = "getAllPartnerUniversities";
     private static final String CREATE_PARTNER_UNIVERSITY = "createPartnerUniversity";
+    private static final String UPDATE_PARTNER_UNIVERSITY = "updatePartnerUniversity";
+    private static final String DELETE_PARTNER_UNIVERSITY = "deletePartnerUniversity";
     private static final String GET_ALL_MODULES = "getAllModules";
     private static final String CREATE_MODULE = "createModule";
+    private static final String UPDATE_MODULE = "updateModule";
+    private static final String DELETE_MODULE = "deleteModule";
 
     private List<PartnerUniversityClientModel> currentPartnerUniversityData;
     private int cursorPartnerUniversityData = 0;
@@ -144,7 +148,12 @@ public class DemoRestClient extends AbstractRestClient {
     public List<ModuleClientModel> moduleData() {
         return currentModuleData;
     }
+
     public String getModuleUrl(long moduleId) {
         return String.format("%s/modules/%d", BASE_URL, moduleId);
+    }
+
+    public String getPartnerUniversityUrl(long universityId) {
+        return String.format("%s/partneruniversities/%d", BASE_URL, universityId);
     }
 }
