@@ -5,4 +5,5 @@ import de.fhws.fiw.fds.suttondemo.server.api.models.PartnerUniversity;
 
 public interface PartnerUniversityDao extends IDatabaseAccessObject<PartnerUniversity> {
     void resetDatabase();
+    void initializeDatabase();  // Add this method
 }

@@ -65,6 +65,14 @@ public class ModuleStorage extends AbstractInMemoryStorage<Module> implements Mo
         this.storage.clear();
     }
 
+    @Override
+    public void initializeDatabase() {
+        // Implement initialization logic here
+        // Example: create some default modules
+        create(new Module("Introduction to AI", 1, 5, 1));
+        create(new Module("Advanced Databases", 2, 5, 1));
+    }
+
     private long nextId() {
         try {
             java.lang.reflect.Method method = AbstractInMemoryStorage.class.getDeclaredMethod("nextId");

@@ -14,6 +14,7 @@ public class ModuleClientModel extends AbstractClientModel {
     @JsonDeserialize(using = ClientLinkJsonConverter.class)
     private transient Link selfLink;
 
+    // Getters and Setters
     public String getModuleName() {
         return moduleName;
     }
@@ -52,5 +53,16 @@ public class ModuleClientModel extends AbstractClientModel {
 
     public void setSelfLink(Link selfLink) {
         this.selfLink = selfLink;
+    }
+
+    @Override
+    public String toString() {
+        return "ModuleClientModel{" +
+                "moduleName='" + moduleName + '\'' +
+                ", semester=" + semester +
+                ", creditPoints=" + creditPoints +
+                ", partnerUniversityId=" + partnerUniversityId +
+                ", selfLink=" + selfLink +
+                '}';
     }
 }

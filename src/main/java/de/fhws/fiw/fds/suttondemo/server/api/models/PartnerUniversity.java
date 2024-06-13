@@ -28,7 +28,9 @@ public class PartnerUniversity extends AbstractModel {
     @SelfLink(pathElement = "partneruniversities")
     private transient Link selfLink;
 
-    public PartnerUniversity() {}
+    public PartnerUniversity() {
+        // Default constructor for JPA
+    }
 
     public PartnerUniversity(String universityName, String country, String departmentName, String websiteUrl, String contactPerson, int outgoingStudents, int incomingStudents, String nextSpringSemesterStart, String nextAutumnSemesterStart) {
         this.universityName = universityName;
@@ -128,5 +130,22 @@ public class PartnerUniversity extends AbstractModel {
 
     public void setSelfLink(Link selfLink) {
         this.selfLink = selfLink;
+    }
+
+    @Override
+    public String toString() {
+        return "PartnerUniversity{" +
+                "universityName='" + universityName + '\'' +
+                ", country='" + country + '\'' +
+                ", departmentName='" + departmentName + '\'' +
+                ", websiteUrl='" + websiteUrl + '\'' +
+                ", contactPerson='" + contactPerson + '\'' +
+                ", outgoingStudents=" + outgoingStudents +
+                ", incomingStudents=" + incomingStudents +
+                ", nextSpringSemesterStart='" + nextSpringSemesterStart + '\'' +
+                ", nextAutumnSemesterStart='" + nextAutumnSemesterStart + '\'' +
+                ", modules=" + modules +
+                ", selfLink=" + selfLink +
+                '}';
     }
 }

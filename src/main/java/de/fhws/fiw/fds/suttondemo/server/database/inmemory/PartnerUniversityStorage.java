@@ -37,6 +37,14 @@ public class PartnerUniversityStorage extends AbstractInMemoryStorage<PartnerUni
     }
 
     @Override
+    public void initializeDatabase() {
+        // Implement initialization logic here
+        // Example: create some default partner universities
+        create(new PartnerUniversity("University of AI", "Germany", "Computer Science", "http://uni-ai.example.com", "Dr. John Doe", 10, 5, "01-03-2023", "01-09-2023"));
+        create(new PartnerUniversity("Tech University", "USA", "Engineering", "http://techuni.example.com", "Prof. Jane Smith", 20, 15, "01-04-2023", "01-10-2023"));
+    }
+
+    @Override
     public CollectionModelResult<PartnerUniversity> readAll(SearchParameter searchParameter) {
         return InMemoryPaging.page(new CollectionModelResult<>(storage.values()), searchParameter.getOffset(), searchParameter.getSize());
     }

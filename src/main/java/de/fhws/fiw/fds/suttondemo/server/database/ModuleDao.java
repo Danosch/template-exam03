@@ -12,4 +12,5 @@ public interface ModuleDao extends IDatabaseAccessObject<Module> {
     SingleModelResult<Module> readById(long universityId, long moduleId);
     NoContentResult deleteByUniversityId(long universityId);
     void resetDatabase();  // Add this method
+    void initializeDatabase();  // Add this method
 }

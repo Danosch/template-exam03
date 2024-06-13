@@ -23,6 +23,7 @@ public class PartnerUniversityClientModel extends AbstractClientModel {
     @JsonDeserialize(using = ClientLinkJsonConverter.class)
     private transient Link selfLink;
 
+    // Getters and Setters
     public String getUniversityName() {
         return universityName;
     }
@@ -109,5 +110,22 @@ public class PartnerUniversityClientModel extends AbstractClientModel {
 
     public void setSelfLink(Link selfLink) {
         this.selfLink = selfLink;
+    }
+
+    @Override
+    public String toString() {
+        return "PartnerUniversityClientModel{" +
+                "universityName='" + universityName + '\'' +
+                ", country='" + country + '\'' +
+                ", departmentName='" + departmentName + '\'' +
+                ", websiteUrl='" + websiteUrl + '\'' +
+                ", contactPerson='" + contactPerson + '\'' +
+                ", outgoingStudents=" + outgoingStudents +
+                ", incomingStudents=" + incomingStudents +
+                ", nextSpringSemesterStart='" + nextSpringSemesterStart + '\'' +
+                ", nextAutumnSemesterStart='" + nextAutumnSemesterStart + '\'' +
+                ", modules=" + modules +
+                ", selfLink=" + selfLink +
+                '}';
     }
 }

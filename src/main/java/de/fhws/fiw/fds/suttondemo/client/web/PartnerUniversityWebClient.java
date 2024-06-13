@@ -26,8 +26,7 @@ public class PartnerUniversityWebClient {
         return createResponse(this.client.sendGetCollectionRequest(url, PartnerUniversityClientModel.class));
     }
 
-    public PartnerUniversityWebResponse postNewPartnerUniversity(String url, PartnerUniversityClientModel partnerUniversity)
-            throws IOException {
+    public PartnerUniversityWebResponse postNewPartnerUniversity(String url, PartnerUniversityClientModel partnerUniversity) throws IOException {
         return createResponse(this.client.sendPostRequest(url, partnerUniversity));
     }
 

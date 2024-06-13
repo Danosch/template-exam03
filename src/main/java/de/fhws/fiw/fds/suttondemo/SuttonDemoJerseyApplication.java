@@ -30,8 +30,6 @@ public class SuttonDemoJerseyApplication extends AbstractJerseyApplication {
     protected Set<Class<?>> getServiceClasses() {
         final Set<Class<?>> returnValue = new HashSet<>();
 
-        returnValue.add(PersonJerseyService.class);
-        returnValue.add(LocationJerseyService.class);
         returnValue.add(DispatcherJerseyService.class);
         returnValue.add(PartnerUniversityJerseyService.class);
         returnValue.add(ModuleJerseyService.class);

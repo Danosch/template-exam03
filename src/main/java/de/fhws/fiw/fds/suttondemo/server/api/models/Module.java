@@ -8,6 +8,17 @@ public class Module extends AbstractModel {
     private int creditPoints;
     private long partnerUniversityId;
 
+    public Module() {
+        // Default constructor for JPA
+    }
+
+    public Module(String moduleName, int semester, int creditPoints, long partnerUniversityId) {
+        this.moduleName = moduleName;
+        this.semester = semester;
+        this.creditPoints = creditPoints;
+        this.partnerUniversityId = partnerUniversityId;
+    }
+
     public String getModuleName() {
         return moduleName;
     }
@@ -38,5 +49,15 @@ public class Module extends AbstractModel {
 
     public void setPartnerUniversityId(long partnerUniversityId) {
         this.partnerUniversityId = partnerUniversityId;
+    }
+
+    @Override
+    public String toString() {
+        return "Module{" +
+                "moduleName='" + moduleName + '\'' +
+                ", semester=" + semester +
+                ", creditPoints=" + creditPoints +
+                ", partnerUniversityId=" + partnerUniversityId +
+                '}';
     }
 }
