@@ -8,6 +8,7 @@ import de.fhws.fiw.fds.sutton.server.database.results.NoContentResult;
 import de.fhws.fiw.fds.sutton.server.database.results.SingleModelResult;
 import de.fhws.fiw.fds.suttondemo.server.api.models.PartnerUniversity;
 import de.fhws.fiw.fds.suttondemo.server.database.PartnerUniversityDao;
+import de.fhws.fiw.fds.suttondemo.server.database.DaoFactory;
 
 public class PartnerUniversityStorage extends AbstractInMemoryStorage<PartnerUniversity> implements PartnerUniversityDao {
 
@@ -28,6 +29,8 @@ public class PartnerUniversityStorage extends AbstractInMemoryStorage<PartnerUni
 
     @Override
     public NoContentResult delete(long id) {
+        // Delete associated modules first
+        DaoFactory.getInstance().getModuleDao().deleteByUniversityId(id);
         return super.delete(id);
     }
 

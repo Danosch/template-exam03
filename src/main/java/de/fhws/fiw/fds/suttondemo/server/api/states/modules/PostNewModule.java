@@ -4,7 +4,9 @@ import de.fhws.fiw.fds.sutton.server.api.serviceAdapters.responseAdapter.JerseyR
 import de.fhws.fiw.fds.sutton.server.api.services.ServiceContext;
 import de.fhws.fiw.fds.sutton.server.api.states.post.AbstractPostRelationState;
 import de.fhws.fiw.fds.sutton.server.database.results.NoContentResult;
+import de.fhws.fiw.fds.sutton.server.database.results.SingleModelResult;
 import de.fhws.fiw.fds.suttondemo.server.api.models.Module;
+import de.fhws.fiw.fds.suttondemo.server.api.models.PartnerUniversity;
 import de.fhws.fiw.fds.suttondemo.server.database.DaoFactory;
 import jakarta.ws.rs.core.Response;
 
@@ -22,5 +24,16 @@ public class PostNewModule extends AbstractPostRelationState<Response, Module> {
     @Override
     protected void defineTransitionLinks() {
         addLink(ModuleUri.REL_PATH, ModuleRelTypes.GET_ALL_MODULES, getAcceptRequestHeader(), this.primaryId);
+    }
+
+    @Override
+    protected Response buildInternal() {
+        SingleModelResult<PartnerUniversity> partnerUniversityResult = DaoFactory.getInstance().getPartnerUniversityDao().readById(this.primaryId);
+
+        if (partnerUniversityResult.getResult() == null) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Partner university does not exist").build();
+        }
+
+        return super.buildInternal();
     }
 }
