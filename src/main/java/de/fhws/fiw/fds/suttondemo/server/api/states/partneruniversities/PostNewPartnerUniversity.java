@@ -22,6 +22,6 @@ public class PostNewPartnerUniversity extends AbstractPostState<Response, Partne
 
     @Override
     protected void defineTransitionLinks() {
-
+        addLink(PartnerUniversityUri.REL_PATH, PartnerUniversityRelTypes.GET_ALL_PARTNER_UNIVERSITIES, getAcceptRequestHeader());
     }
 }

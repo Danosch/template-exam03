@@ -37,7 +37,7 @@ public class GetSinglePartnerUniversity extends AbstractGetState<Response, Partn
 
     @Override
     protected void defineTransitionLinks() {
-        addLink(PartnerUniversityUri.REL_PATH_ID, PartnerUniversityRelTypes.UPDATE_SINGLE_PARTNER_UNIVERSITY + "_" + System.nanoTime(), getAcceptRequestHeader(), this.requestedId);
-        addLink(PartnerUniversityUri.REL_PATH_ID, PartnerUniversityRelTypes.DELETE_SINGLE_PARTNER_UNIVERSITY + "_" + System.nanoTime(), getAcceptRequestHeader(), this.requestedId);
+        addLink(PartnerUniversityUri.REL_PATH_ID, PartnerUniversityRelTypes.UPDATE_SINGLE_PARTNER_UNIVERSITY, getAcceptRequestHeader(), this.requestedId);
+        addLink(PartnerUniversityUri.REL_PATH_ID, PartnerUniversityRelTypes.DELETE_SINGLE_PARTNER_UNIVERSITY, getAcceptRequestHeader(), this.requestedId);
     }
 }

@@ -13,7 +13,7 @@ import jakarta.ws.rs.core.Response;
 public class PostNewModule extends AbstractPostRelationState<Response, Module> {
     public PostNewModule(ServiceContext serviceContext, long primaryId, Module modelToStore) {
         super(serviceContext, primaryId, modelToStore);
-        this.suttonResponse = new JerseyResponse<>(); // Ensure suttonResponse is initialized
+        this.suttonResponse = new JerseyResponse<>(); // Ensure suttonResponse is initialized if not done in base class
     }
 
     @Override

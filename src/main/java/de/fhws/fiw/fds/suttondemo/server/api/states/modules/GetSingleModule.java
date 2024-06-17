@@ -16,7 +16,12 @@ public class GetSingleModule extends AbstractGetRelationState<Response, Module> 
 
     @Override
     protected SingleModelResult<Module> loadModel() {
-        return DaoFactory.getInstance().getModuleDao().readById(this.primaryId, this.requestedId);
+        try {
+            return DaoFactory.getInstance().getModuleDao().readById(this.primaryId, this.requestedId);
+        } catch (Exception e) {
+            // Log the exception and return a failure result
+            return new SingleModelResult<>(e);
+        }
     }
 
     @Override

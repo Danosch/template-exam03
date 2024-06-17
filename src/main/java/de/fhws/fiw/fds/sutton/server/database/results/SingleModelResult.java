@@ -53,6 +53,10 @@ public class SingleModelResult<T extends AbstractModel> extends AbstractResult {
         this.found = result != null;
     }
 
+    public SingleModelResult(Exception e) {
+
+    }
+
     /**
      * @return {@link SingleModelResult#result}
      */
