@@ -158,8 +158,6 @@ public class DemoRestClient extends AbstractRestClient {
         return isAllowed;
     }
 
-
-
     public void deletePartnerUniversity(String url) throws IOException {
         if (isDeletePartnerUniversityAllowed()) {
             processResponse(this.partnerUniversityClient.deletePartnerUniversity(url), (response) -> {
@@ -224,11 +222,7 @@ public class DemoRestClient extends AbstractRestClient {
         }
     }
 
-    public void getSingleModule(int index) throws IOException {
-        getSingleModule(this.currentModuleData.get(index).getSelfLink().getUrl());
-    }
-
-    private void getSingleModule(String url) throws IOException {
+    public void getSingleModule(String url) throws IOException {
         processResponse(this.moduleClient.getSingleModule(url), (response) -> {
             Collection<ModuleClientModel> responseData = response.getResponseData();
             if (!responseData.isEmpty()) {
@@ -237,6 +231,21 @@ public class DemoRestClient extends AbstractRestClient {
                 this.cursorModuleData = 0;
             }
         });
+    }
+
+    public List<ModuleClientModel> moduleData() {
+        if (this.currentModuleData.isEmpty()) {
+            throw new IllegalStateException();
+        }
+        return this.currentModuleData;
+    }
+
+    public void setModuleCursor(int index) {
+        if (0 <= index && index < this.currentModuleData.size()) {
+            this.cursorModuleData = index;
+        } else {
+            throw new IllegalArgumentException();
+        }
     }
 
     public boolean isUpdateModuleAllowed() {
@@ -277,21 +286,6 @@ public class DemoRestClient extends AbstractRestClient {
             });
         } else {
             throw new IllegalStateException("Delete Module not allowed");
-        }
-    }
-
-    public List<ModuleClientModel> moduleData() {
-        if (this.currentModuleData.isEmpty()) {
-            throw new IllegalStateException();
-        }
-        return this.currentModuleData;
-    }
-
-    public void setModuleCursor(int index) {
-        if (0 <= index && index < this.currentModuleData.size()) {
-            this.cursorModuleData = index;
-        } else {
-            throw new IllegalArgumentException();
         }
     }
 

@@ -10,7 +10,11 @@ import de.fhws.fiw.fds.suttondemo.server.api.models.PartnerUniversity;
 import de.fhws.fiw.fds.suttondemo.server.database.DaoFactory;
 import jakarta.ws.rs.core.Response;
 
+import java.util.logging.Logger;
+
 public class PostNewModule extends AbstractPostRelationState<Response, Module> {
+    private static final Logger LOGGER = Logger.getLogger(PostNewModule.class.getName());
+
     public PostNewModule(ServiceContext serviceContext, long primaryId, Module modelToStore) {
         super(serviceContext, primaryId, modelToStore);
         this.suttonResponse = new JerseyResponse<>(); // Ensure suttonResponse is initialized if not done in base class
@@ -18,7 +22,12 @@ public class PostNewModule extends AbstractPostRelationState<Response, Module> {
 
     @Override
     protected NoContentResult saveModel() {
-        return DaoFactory.getInstance().getModuleDao().create(this.modelToStore);
+        try {
+            return DaoFactory.getInstance().getModuleDao().create(this.modelToStore);
+        } catch (Exception e) {
+            LOGGER.severe("Error saving module: " + e.getMessage());
+            throw e;
+        }
     }
 
     @Override

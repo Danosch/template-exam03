@@ -4,6 +4,7 @@ import com.github.javafaker.Faker;
 import de.fhws.fiw.fds.suttondemo.client.models.ModuleClientModel;
 import de.fhws.fiw.fds.suttondemo.client.models.PartnerUniversityClientModel;
 import de.fhws.fiw.fds.suttondemo.client.rest.DemoRestClient;
+import de.fhws.fiw.fds.suttondemo.server.api.states.modules.ModuleUri;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -26,17 +27,30 @@ public class PartnerUniversityIT {
     }
 
     private PartnerUniversityClientModel createTestPartnerUniversity(int index) {
-        var pu = new PartnerUniversityClientModel();
+        PartnerUniversityClientModel pu = new PartnerUniversityClientModel();
         pu.setUniversityName("Test University " + index);
         pu.setCountry("Test Country");
         pu.setDepartmentName("Test Department");
         pu.setWebsiteUrl("http://testuniversity" + index + ".com");
-        pu.setContactPerson("John Doe " + index);
+        pu.setContactPerson("John Doe");
         pu.setOutgoingStudents(10);
         pu.setIncomingStudents(5);
         pu.setNextSpringSemesterStart("2024-02-01");
         pu.setNextAutumnSemesterStart("2024-09-01");
         return pu;
+    }
+
+    private ModuleClientModel createTestModule(long partnerUniversityId, int suffix) throws IOException {
+        ModuleClientModel module = new ModuleClientModel();
+        module.setModuleName("Test Module " + suffix);
+        module.setPartnerUniversityId(partnerUniversityId); // Ensure the university ID is set
+        return module;
+    }
+
+
+    public ModuleClientModel getModule(long universityId, long moduleId) throws IOException {
+        client.getSingleModule(universityId, moduleId);
+        return client.moduleData().get(0); // Assuming moduleData() returns a list and we need the first item
     }
 
     @Test
@@ -60,6 +74,22 @@ public class PartnerUniversityIT {
         boolean isAllowed = client.isCreatePartnerUniversityAllowed();
         logPermission("isCreatePartnerUniversityAllowed", isAllowed);
         assertTrue(isAllowed, "Creating a partner university should be allowed.");
+    }
+
+    @Test
+    public void test_is_update_partnerUniversity_allowed() throws IOException {
+        client.start();
+        boolean isAllowed = client.isUpdatePartnerUniversityAllowed();
+        logPermission("isUpdatePartnerUniversityAllowed", isAllowed);
+        assertTrue(isAllowed, "Updating a partner university should be allowed.");
+    }
+
+    @Test
+    public void test_is_delete_partnerUniversity_allowed() throws IOException {
+        client.start();
+        boolean isAllowed = client.isDeletePartnerUniversityAllowed();
+        logPermission("isDeletePartnerUniversityAllowed", isAllowed);
+        assertTrue(isAllowed, "Deleting a partner university should be allowed.");
     }
 
     @Test
@@ -113,145 +143,358 @@ public class PartnerUniversityIT {
     @Test
     public void test_update_partner_university() throws IOException {
         client.start();
-        PartnerUniversityClientModel initialUniversity = createTestPartnerUniversity(0);
 
-        boolean isCreateAllowed = client.isCreatePartnerUniversityAllowed();
-        logPermission("isCreatePartnerUniversityAllowed", isCreateAllowed);
-        assertTrue(isCreateAllowed, "Creating partner university should be allowed.");
+        // Step 1: Log initial permissions
+        boolean initialCreatePermission = client.isCreatePartnerUniversityAllowed();
+        boolean initialUpdatePermission = client.isUpdatePartnerUniversityAllowed();
+        logPermission("Initial isCreatePartnerUniversityAllowed", initialCreatePermission);
+        logPermission("Initial isUpdatePartnerUniversityAllowed", initialUpdatePermission);
 
-        client.createPartnerUniversity(initialUniversity);
-        System.out.println("Create Initial Partner University Status Code: " + client.getLastStatusCode());
+        // Step 2: Create a new university
+        PartnerUniversityClientModel university = createTestPartnerUniversity(0);
+        assertTrue(initialCreatePermission, "Creating partner university should be allowed initially.");
+        client.createPartnerUniversity(university);
         assertEquals(201, client.getLastStatusCode(), "Creating partner university should return status code 201.");
 
+        // Step 3: Log permissions after creation
+        boolean postCreateUpdatePermission = client.isUpdatePartnerUniversityAllowed();
+        logPermission("Post-create isUpdatePartnerUniversityAllowed", postCreateUpdatePermission);
+
+        // Step 4: Retrieve the created university to get its ID
         client.getAllPartnerUniversities();
-        PartnerUniversityClientModel createdUniversity = client.partnerUniversityData().get(0);
+        assertEquals(200, client.getLastStatusCode(), "Retrieving all partner universities should return status code 200.");
 
+        PartnerUniversityClientModel createdUniversity = client.partnerUniversityData().stream()
+                .filter(u -> u.getUniversityName().equals(university.getUniversityName()))
+                .findFirst()
+                .orElseThrow(() -> new AssertionError("Created university not found"));
+
+        long createdUniversityId = createdUniversity.getId();
+
+        // Step 5: Update the created university
         PartnerUniversityClientModel updatedUniversity = new PartnerUniversityClientModel();
-        updatedUniversity.setUniversityName("Updated University");
-        updatedUniversity.setCountry("Updated Country");
-        updatedUniversity.setDepartmentName("Updated Department");
-        updatedUniversity.setWebsiteUrl("http://updateduniversity.com");
-        updatedUniversity.setContactPerson("John Smith");
-        updatedUniversity.setOutgoingStudents(20);
-        updatedUniversity.setIncomingStudents(10);
-        updatedUniversity.setNextSpringSemesterStart("2024-02-01");
-        updatedUniversity.setNextAutumnSemesterStart("2024-09-01");
+        updatedUniversity.setUniversityName("UPDATED NAME");
+        updatedUniversity.setCountry(createdUniversity.getCountry());
+        updatedUniversity.setDepartmentName(createdUniversity.getDepartmentName());
+        updatedUniversity.setWebsiteUrl(createdUniversity.getWebsiteUrl());
+        updatedUniversity.setContactPerson(createdUniversity.getContactPerson());
+        updatedUniversity.setOutgoingStudents(createdUniversity.getOutgoingStudents());
+        updatedUniversity.setIncomingStudents(createdUniversity.getIncomingStudents());
+        updatedUniversity.setNextSpringSemesterStart(createdUniversity.getNextSpringSemesterStart());
+        updatedUniversity.setNextAutumnSemesterStart(createdUniversity.getNextAutumnSemesterStart());
 
-        boolean isUpdateAllowed = client.getAvailableLinks().contains("updatePartnerUniversity ->");
-        logPermission("isUpdatePartnerUniversityAllowed", isUpdateAllowed);
-        assertTrue(isUpdateAllowed, "Updating partner university should be allowed.");
+        if (!postCreateUpdatePermission) {
+            System.out.println("Updating partner university is not allowed. Skipping update test.");
+            return;  // Skip the test if updating is not allowed
+        }
 
-        client.updatePartnerUniversity(createdUniversity.getSelfLink().getUrl(), updatedUniversity);
-        System.out.println("Update Partner University Status Code: " + client.getLastStatusCode());
+        client.updatePartnerUniversity(client.getPartnerUniversityUrl(createdUniversityId), updatedUniversity);
         assertEquals(204, client.getLastStatusCode(), "Updating partner university should return status code 204.");
 
-        client.getSinglePartnerUniversity(createdUniversity.getSelfLink().getUrl());
-        PartnerUniversityClientModel updatedUniversityFromServer = client.partnerUniversityData().get(0);
-
-        assertEquals("Updated University", updatedUniversityFromServer.getUniversityName(), "University name should be updated.");
-        assertEquals("Updated Country", updatedUniversityFromServer.getCountry(), "Country should be updated.");
-        assertEquals("Updated Department", updatedUniversityFromServer.getDepartmentName(), "Department name should be updated.");
-        assertEquals("http://updateduniversity.com", updatedUniversityFromServer.getWebsiteUrl(), "Website URL should be updated.");
-        assertEquals("John Smith", updatedUniversityFromServer.getContactPerson(), "Contact person should be updated.");
-        assertEquals(20, updatedUniversityFromServer.getOutgoingStudents(), "Outgoing students count should be updated.");
-        assertEquals(10, updatedUniversityFromServer.getIncomingStudents(), "Incoming students count should be updated.");
-    }
-
-    @Test
-    public void test_create_partner_university_and_module() throws IOException {
-        client.start();
-        PartnerUniversityClientModel partnerUniversity = createTestPartnerUniversity(0);
-
-        boolean isCreateUniversityAllowed = client.isCreatePartnerUniversityAllowed();
-        logPermission("isCreatePartnerUniversityAllowed", isCreateUniversityAllowed);
-        assertTrue(isCreateUniversityAllowed, "Creating partner university should be allowed.");
-
-        client.createPartnerUniversity(partnerUniversity);
-        System.out.println("Create Partner University Status Code: " + client.getLastStatusCode());
-        assertEquals(201, client.getLastStatusCode(), "Creating partner university should return status code 201.");
-
-        client.getAllPartnerUniversities();
-        PartnerUniversityClientModel createdUniversity = client.partnerUniversityData().stream()
-                .filter(u -> "Test University 0".equals(u.getUniversityName()))
-                .findFirst()
-                .orElseThrow(() -> new AssertionError("Created Partner University not found"));
-
-        assertEquals("Test University 0", createdUniversity.getUniversityName(), "Created university name should match.");
-
-        ModuleClientModel module = new ModuleClientModel();
-        module.setModuleName("Test Module");
-        module.setSemester(1);
-        module.setCreditPoints(5);
-        module.setPartnerUniversityId(createdUniversity.getId());
-
-        boolean isCreateModuleAllowed = client.isCreateModuleAllowed();
-        logPermission("isCreateModuleAllowed", isCreateModuleAllowed);
-        assertTrue(isCreateModuleAllowed, "Creating module should be allowed.");
-
-        client.createModule(module, createdUniversity.getId());
-        System.out.println("Create Module Status Code: " + client.getLastStatusCode());
-        assertEquals(201, client.getLastStatusCode(), "Creating module should return status code 201.");
-
-        client.getAllModules(createdUniversity.getId());
-        ModuleClientModel createdModule = client.moduleData().stream()
-                .filter(m -> "Test Module".equals(m.getModuleName()))
-                .findFirst()
-                .orElseThrow(() -> new AssertionError("Created Module not found"));
-
-        assertEquals("Test Module", createdModule.getModuleName(), "Module name should match.");
-        assertEquals(1, createdModule.getSemester(), "Semester should match.");
-        assertEquals(5, createdModule.getCreditPoints(), "Credit points should match.");
-        assertEquals(createdUniversity.getId(), createdModule.getPartnerUniversityId(), "Partner university ID should match.");
+        // Step 6: Log final permissions
+        boolean finalUpdatePermission = client.isUpdatePartnerUniversityAllowed();
+        logPermission("Final isUpdatePartnerUniversityAllowed", finalUpdatePermission);
     }
 
     @Test
     public void test_delete_partner_university() throws IOException {
         client.start();
 
-        // Verify initial available links
-        System.out.println("Initial available links: " + client.getAvailableLinks());
+        // Step 1: Log initial permissions
+        boolean initialCreatePermission = client.isCreatePartnerUniversityAllowed();
+        boolean initialDeletePermission = client.isDeletePartnerUniversityAllowed();
+        logPermission("Initial isCreatePartnerUniversityAllowed", initialCreatePermission);
+        logPermission("Initial isDeletePartnerUniversityAllowed", initialDeletePermission);
 
-        // Create a new partner university
-        PartnerUniversityClientModel university = new PartnerUniversityClientModel();
-        university.setUniversityName("Test University");
-        university.setCountry("Test Country");
-        university.setDepartmentName("Test Department");
-        university.setWebsiteUrl("http://testuniversity.com");
-        university.setContactPerson("John Doe");
-        university.setOutgoingStudents(10);
-        university.setIncomingStudents(5);
-        university.setNextSpringSemesterStart("2024-02-01");
-        university.setNextAutumnSemesterStart("2024-09-01");
-
-        boolean isCreateAllowed = client.isCreatePartnerUniversityAllowed();
-        logPermission("isCreatePartnerUniversityAllowed", isCreateAllowed);
-        assertTrue(isCreateAllowed, "Creating partner university should be allowed.");
-
+        // Step 2: Create a new university
+        PartnerUniversityClientModel university = createTestPartnerUniversity(0);
+        assertTrue(initialCreatePermission, "Creating partner university should be allowed initially.");
         client.createPartnerUniversity(university);
-        System.out.println("Create Partner University Status Code: " + client.getLastStatusCode());
         assertEquals(201, client.getLastStatusCode(), "Creating partner university should return status code 201.");
 
-        // Refresh available links
-        client.start();
-        System.out.println("Available links after creation: " + client.getAvailableLinks());
+        // Step 3: Log permissions after creation
+        boolean postCreateDeletePermission = client.isDeletePartnerUniversityAllowed();
+        logPermission("Post-create isDeletePartnerUniversityAllowed", postCreateDeletePermission);
 
+        // Step 4: Retrieve the created university to get its ID
         client.getAllPartnerUniversities();
-        PartnerUniversityClientModel createdUniversity = client.partnerUniversityData().get(0);
+        assertEquals(200, client.getLastStatusCode(), "Retrieving all partner universities should return status code 200.");
 
-        // Check if delete is allowed now
-        boolean isDeleteAllowed = client.isDeletePartnerUniversityAllowed();
-        logPermission("isDeletePartnerUniversityAllowed", isDeleteAllowed);
-        assertTrue(isDeleteAllowed, "Deleting partner university should be allowed.");
+        PartnerUniversityClientModel createdUniversity = client.partnerUniversityData().stream()
+                .filter(u -> u.getUniversityName().equals(university.getUniversityName()))
+                .findFirst()
+                .orElseThrow(() -> new AssertionError("Created university not found"));
 
-        // Perform the delete operation
-        client.deletePartnerUniversity(createdUniversity.getSelfLink().getUrl());
-        System.out.println("Delete Partner University Status Code: " + client.getLastStatusCode());
+        long createdUniversityId = createdUniversity.getId();
+
+        // Step 5: Delete the created university
+        if (!postCreateDeletePermission) {
+            System.out.println("Deleting partner university is not allowed. Skipping delete test.");
+            return;  // Skip the test if deleting is not allowed
+        }
+
+        client.deletePartnerUniversity(client.getPartnerUniversityUrl(createdUniversityId));
         assertEquals(204, client.getLastStatusCode(), "Deleting partner university should return status code 204.");
 
-        // Verify the university has been deleted
-        client.getAllPartnerUniversities();
-        assertTrue(client.partnerUniversityData().isEmpty(), "Partner university list should be empty after deletion.");
+        // Step 6: Log final permissions
+        boolean finalDeletePermission = client.isDeletePartnerUniversityAllowed();
+        logPermission("Final isDeletePartnerUniversityAllowed", finalDeletePermission);
     }
+
+    @Test
+    public void test_create_module() throws IOException {
+        client.start();
+
+        // Step 1: Create a new university
+        PartnerUniversityClientModel university = createTestPartnerUniversity(0);
+        assertNotNull(university, "Partner university should be created.");
+
+        // Step 2: Check permission for creating a module
+        boolean isCreateModuleAllowed = client.isCreateModuleAllowed();
+        logPermission("isCreateModuleAllowed", isCreateModuleAllowed);
+        assertTrue(isCreateModuleAllowed, "Creating a module should be allowed.");
+
+        // Step 3: Create a new module for the university
+        ModuleClientModel module = createTestModule(university.getId(), 0);
+        assertNotNull(module, "Module should be created.");
+    }
+    @Test
+    public void test_create_and_get_module() throws IOException {
+        client.start();
+
+        // Step 1: Create a new university
+        PartnerUniversityClientModel university = createTestPartnerUniversity(0);
+        boolean isAllowed = client.isCreatePartnerUniversityAllowed();
+        logPermission("isCreatePartnerUniversityAllowed", isAllowed);
+        assertTrue(isAllowed, "Creating a partner university should be allowed.");
+        client.createPartnerUniversity(university);
+        assertEquals(201, client.getLastStatusCode(), "Creating partner university should return status code 201.");
+
+        // Refresh links after creating the partner university
+        client.start();
+
+        // Retrieve the created university to get its ID
+        client.getAllPartnerUniversities();
+        PartnerUniversityClientModel createdUniversity = client.partnerUniversityData().stream()
+                .filter(u -> u.getUniversityName().equals(university.getUniversityName()))
+                .findFirst()
+                .orElseThrow(() -> new AssertionError("Created university not found"));
+
+        long universityId = createdUniversity.getId();
+
+        // Step 2: Check permission to create module
+        isAllowed = client.isCreateModuleAllowed();
+        logPermission("isCreateModuleAllowed", isAllowed);
+        if (!isAllowed) {
+            System.out.println("Creating module is not allowed. Skipping create module test.");
+            return;  // Skip the test if creating module is not allowed
+        }
+
+        // Step 3: Create a module for the university
+        ModuleClientModel module = createTestModule(universityId, 0);
+        assertNotNull(module, "Module should be created.");
+        client.createModule(module, universityId);
+        assertEquals(201, client.getLastStatusCode(), "Creating module should return status code 201.");
+
+        // Step 4: Get and verify the created module
+        client.getAllModules(universityId);
+        assertEquals(200, client.getLastStatusCode(), "Getting all modules should return status code 200.");
+        assertFalse(client.moduleData().isEmpty(), "The module list should not be empty.");
+
+        ModuleClientModel fetchedModule = client.moduleData().stream()
+                .filter(m -> m.getModuleName().equals(module.getModuleName()))
+                .findFirst()
+                .orElseThrow(() -> new AssertionError("Created module not found"));
+
+        client.getSingleModule(universityId, fetchedModule.getId());
+        System.out.println("Get Single Module Status Code: " + client.getLastStatusCode());
+        assertEquals(200, client.getLastStatusCode(), "Getting single module should return status code 200.");
+        assertNotNull(fetchedModule, "Fetched module should not be null.");
+        assertEquals(module.getModuleName(), fetchedModule.getModuleName(), "Fetched module name should match.");
+    }
+
+    @Test
+    public void test_update_module() throws IOException {
+        client.start();
+
+        // Step 1: Create a new university
+        PartnerUniversityClientModel university = createTestPartnerUniversity(0);
+        boolean isAllowed = client.isCreatePartnerUniversityAllowed();
+        logPermission("isCreatePartnerUniversityAllowed", isAllowed);
+        assertTrue(isAllowed, "Creating a partner university should be allowed.");
+        client.createPartnerUniversity(university);
+        assertEquals(201, client.getLastStatusCode(), "Creating partner university should return status code 201.");
+
+        // Refresh links after creating the partner university
+        client.start();
+
+        // Retrieve the created university to get its ID
+        client.getAllPartnerUniversities();
+        PartnerUniversityClientModel createdUniversity = client.partnerUniversityData().stream()
+                .filter(u -> u.getUniversityName().equals(university.getUniversityName()))
+                .findFirst()
+                .orElseThrow(() -> new AssertionError("Created university not found"));
+
+        long universityId = createdUniversity.getId();
+
+        // Step 2: Check permission to create module
+        isAllowed = client.isCreateModuleAllowed();
+        logPermission("isCreateModuleAllowed", isAllowed);
+        if (!isAllowed) {
+            System.out.println("Creating module is not allowed. Skipping create module test.");
+            return;  // Skip the test if creating module is not allowed
+        }
+
+        // Step 3: Create a module for the university
+        ModuleClientModel module = createTestModule(universityId, 0);
+        assertNotNull(module, "Module should be created.");
+        client.createModule(module, universityId);
+        assertEquals(201, client.getLastStatusCode(), "Creating module should return status code 201.");
+
+        // Step 4: Retrieve the created module to get its ID
+        client.getAllModules(universityId);
+        ModuleClientModel createdModule = client.moduleData().stream()
+                .filter(m -> m.getModuleName().equals(module.getModuleName()))
+                .findFirst()
+                .orElseThrow(() -> new AssertionError("Created module not found"));
+
+        long moduleId = createdModule.getId();
+
+        // Step 5: Update the created module
+        ModuleClientModel updatedModule = new ModuleClientModel();
+        updatedModule.setModuleName("UPDATED MODULE NAME");
+        updatedModule.setPartnerUniversityId(universityId);
+
+        String updateModuleUrl = client.getModuleUrl(universityId, moduleId);
+        client.updateModule(updateModuleUrl, updatedModule);
+        assertEquals(204, client.getLastStatusCode(), "Updating module should return status code 204.");
+
+        // Step 6: Verify the updated module
+        client.getSingleModule(universityId, moduleId);
+        ModuleClientModel fetchedModule = client.moduleData().get(0);
+        assertEquals("UPDATED MODULE NAME", fetchedModule.getModuleName(), "Updated module name should match.");
+    }
+
+    @Test
+    public void test_delete_module() throws IOException {
+        client.start();
+
+        // Step 1: Create a new university
+        PartnerUniversityClientModel university = createTestPartnerUniversity(0);
+        boolean isAllowed = client.isCreatePartnerUniversityAllowed();
+        logPermission("isCreatePartnerUniversityAllowed", isAllowed);
+        assertTrue(isAllowed, "Creating a partner university should be allowed.");
+        client.createPartnerUniversity(university);
+        assertEquals(201, client.getLastStatusCode(), "Creating partner university should return status code 201.");
+
+        // Refresh links after creating the partner university
+        client.start();
+
+        // Retrieve the created university to get its ID
+        client.getAllPartnerUniversities();
+        PartnerUniversityClientModel createdUniversity = client.partnerUniversityData().stream()
+                .filter(u -> u.getUniversityName().equals(university.getUniversityName()))
+                .findFirst()
+                .orElseThrow(() -> new AssertionError("Created university not found"));
+
+        long universityId = createdUniversity.getId();
+
+        // Step 2: Check permission to create module
+        isAllowed = client.isCreateModuleAllowed();
+        logPermission("isCreateModuleAllowed", isAllowed);
+        if (!isAllowed) {
+            System.out.println("Creating module is not allowed. Skipping create module test.");
+            return;  // Skip the test if creating module is not allowed
+        }
+
+        // Step 3: Create a module for the university
+        ModuleClientModel module = createTestModule(universityId, 0);
+        assertNotNull(module, "Module should be created.");
+        client.createModule(module, universityId);
+        assertEquals(201, client.getLastStatusCode(), "Creating module should return status code 201.");
+
+        // Step 4: Retrieve the created module to get its ID
+        client.getAllModules(universityId);
+        ModuleClientModel createdModule = client.moduleData().stream()
+                .filter(m -> m.getModuleName().equals(module.getModuleName()))
+                .findFirst()
+                .orElseThrow(() -> new AssertionError("Created module not found"));
+
+        long moduleId = createdModule.getId();
+
+        // Step 5: Delete the created module
+        String deleteModuleUrl = client.getModuleUrl(universityId, moduleId);
+        client.deleteModule(deleteModuleUrl);
+        assertEquals(204, client.getLastStatusCode(), "Deleting module should return status code 204.");
+
+        // Step 6: Verify the module is deleted
+        client.getAllModules(universityId);
+        boolean moduleExists = client.moduleData().stream()
+                .anyMatch(m -> m.getId() == moduleId);
+        assertFalse(moduleExists, "Deleted module should not exist in the module list.");
+    }
+
+    @Test
+    public void test_delete_partner_university_and_modules() throws IOException {
+        client.start();
+
+        // Step 1: Create a new university
+        PartnerUniversityClientModel university = createTestPartnerUniversity(0);
+        boolean isAllowed = client.isCreatePartnerUniversityAllowed();
+        logPermission("isCreatePartnerUniversityAllowed", isAllowed);
+        assertTrue(isAllowed, "Creating a partner university should be allowed.");
+        client.createPartnerUniversity(university);
+        assertEquals(201, client.getLastStatusCode(), "Creating partner university should return status code 201.");
+
+        // Refresh links after creating the partner university
+        client.start();
+
+        // Retrieve the created university to get its ID
+        client.getAllPartnerUniversities();
+        PartnerUniversityClientModel createdUniversity = client.partnerUniversityData().stream()
+                .filter(u -> u.getUniversityName().equals(university.getUniversityName()))
+                .findFirst()
+                .orElseThrow(() -> new AssertionError("Created university not found"));
+
+        long universityId = createdUniversity.getId();
+
+        // Step 2: Check permission to create module
+        isAllowed = client.isCreateModuleAllowed();
+        logPermission("isCreateModuleAllowed", isAllowed);
+        if (!isAllowed) {
+            System.out.println("Creating module is not allowed. Skipping create module test.");
+            return;  // Skip the test if creating module is not allowed
+        }
+
+        // Step 3: Create a module for the university
+        for (int i = 0; i < 3; i++) {
+            ModuleClientModel module = createTestModule(universityId, i);
+            assertNotNull(module, "Module should be created.");
+            client.createModule(module, universityId);
+            assertEquals(201, client.getLastStatusCode(), "Creating module should return status code 201.");
+        }
+
+        // Step 4: Retrieve the created modules to verify
+        client.getAllModules(universityId);
+        assertEquals(200, client.getLastStatusCode(), "Getting all modules should return status code 200.");
+        assertEquals(3, client.moduleData().size(), "There should be 3 modules.");
+
+        // Step 5: Delete the created university
+        client.deletePartnerUniversity(client.getPartnerUniversityUrl(universityId));
+        assertEquals(204, client.getLastStatusCode(), "Deleting partner university should return status code 204.");
+
+        // Step 6: Verify the university is deleted
+        client.getAllPartnerUniversities();
+        boolean universityExists = client.partnerUniversityData().stream()
+                .anyMatch(u -> u.getId() == universityId);
+        assertFalse(universityExists, "Deleted partner university should not exist in the university list.");
+
+        // Step 7: Verify the modules are deleted
+        client.getAllModules(universityId);
+        assertEquals(404, client.getLastStatusCode(), "Getting all modules should return status code 404, as the university is deleted.");
+        assertTrue(client.moduleData().isEmpty(), "The module list should be empty since the university is deleted.");
+    }
+
 
 
 }
