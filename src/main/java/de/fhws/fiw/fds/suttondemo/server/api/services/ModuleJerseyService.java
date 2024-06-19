@@ -2,7 +2,9 @@ package de.fhws.fiw.fds.suttondemo.server.api.services;
 
 import de.fhws.fiw.fds.sutton.server.api.serviceAdapters.Exceptions.SuttonWebAppException;
 import de.fhws.fiw.fds.sutton.server.api.services.AbstractJerseyService;
+import de.fhws.fiw.fds.sutton.server.database.results.CollectionModelResult;
 import de.fhws.fiw.fds.suttondemo.server.api.models.Module;
+import de.fhws.fiw.fds.suttondemo.server.api.queries.GetAllModulesQuery;
 import de.fhws.fiw.fds.suttondemo.server.api.queries.QueryByUniversityId;
 import de.fhws.fiw.fds.suttondemo.server.api.states.modules.*;
 import jakarta.ws.rs.*;
@@ -16,13 +18,19 @@ public class ModuleJerseyService extends AbstractJerseyService {
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getAllModules(@PathParam("universityId") final long universityId,
                                   @QueryParam("offset") @DefaultValue("0") int offset,
-                                  @QueryParam("size") @DefaultValue("20") int size) {
+                                  @QueryParam("size") @DefaultValue("20") int size,
+                                  @QueryParam("sort") @DefaultValue("id") String sort,
+                                  @QueryParam("sortOrder") @DefaultValue("asc") String sortOrder) {
         try {
-            return new GetAllModules(this.serviceContext, universityId, new QueryByUniversityId<>(universityId, offset, size)).execute();
+            GetAllModulesQuery query = new GetAllModulesQuery(universityId, offset, size, sort, sortOrder);
+            CollectionModelResult<Module> result = query.startQuery();
+            return Response.ok(result.getResult()).build();
         } catch (SuttonWebAppException e) {
-            throw new WebApplicationException(e.getExceptionMessage(), e.getStatus().getCode());
+            throw new WebApplicationException(Response.status(e.getStatus().getCode())
+                    .entity(e.getExceptionMessage()).build());
         }
     }
+
 
     @GET
     @Path("{id: \\d+}")

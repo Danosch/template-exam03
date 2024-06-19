@@ -9,6 +9,9 @@ import de.fhws.fiw.fds.sutton.server.database.results.SingleModelResult;
 import de.fhws.fiw.fds.suttondemo.server.api.models.Module;
 import de.fhws.fiw.fds.suttondemo.server.database.ModuleDao;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -17,14 +20,34 @@ public class ModuleStorage extends AbstractInMemoryStorage<Module> implements Mo
     @Override
     public CollectionModelResult<Module> readByUniversityId(long universityId, SearchParameter searchParameter) {
         Predicate<Module> predicate = module -> module.getPartnerUniversityId() == universityId;
-        CollectionModelResult<Module> filteredResult = new CollectionModelResult<>(
-                storage.values().stream().filter(predicate).collect(Collectors.toList())
-        );
-        return InMemoryPaging.page(
-                filteredResult,
-                searchParameter.getOffset(),
-                searchParameter.getSize()
-        );
+        List<Module> filteredList = storage.values().stream().filter(predicate).collect(Collectors.toList());
+
+        if (searchParameter.getOrderByAttribute() != null && !searchParameter.getOrderByAttribute().isEmpty()) {
+            String[] orderParts = searchParameter.getOrderByAttribute().split(" ");
+            String sortAttribute = orderParts[0];
+            boolean descending = orderParts.length > 1 && "desc".equalsIgnoreCase(orderParts[1]);
+
+            Comparator<Module> comparator;
+            switch (sortAttribute) {
+                case "moduleName":
+                    comparator = Comparator.comparing(Module::getModuleName);
+                    break;
+                case "creditPoints":
+                    comparator = Comparator.comparingInt(Module::getCreditPoints);
+                    break;
+                default:
+                    comparator = Comparator.comparingLong(Module::getId);
+                    break;
+            }
+
+            if (descending) {
+                comparator = comparator.reversed();
+            }
+
+            filteredList.sort(comparator);
+        }
+
+        return InMemoryPaging.page(new CollectionModelResult<>(filteredList), searchParameter.getOffset(), searchParameter.getSize());
     }
 
     @Override
@@ -67,8 +90,6 @@ public class ModuleStorage extends AbstractInMemoryStorage<Module> implements Mo
 
     @Override
     public void initializeDatabase() {
-        // Implement initialization logic here
-        // Example: create some default modules
         create(new Module("Introduction to AI", 1, 5, 1));
         create(new Module("Advanced Databases", 2, 5, 1));
     }
