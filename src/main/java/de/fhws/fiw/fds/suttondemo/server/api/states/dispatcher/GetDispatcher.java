@@ -20,16 +20,17 @@ public class GetDispatcher extends AbstractGetDispatcherState<Response> {
     protected void defineTransitionLinks() {
         // Partner University links
         addLink(PartnerUniversityUri.REL_PATH, PartnerUniversityRelTypes.GET_ALL_PARTNER_UNIVERSITIES, getAcceptRequestHeader());
-        addLink(PartnerUniversityUri.REL_PATH, PartnerUniversityRelTypes.CREATE_PARTNER_UNIVERSITY,  getAcceptRequestHeader());
-        addLink(PartnerUniversityUri.REL_PATH_ID, PartnerUniversityRelTypes.UPDATE_SINGLE_PARTNER_UNIVERSITY,  getAcceptRequestHeader(), "{id}");
-        addLink(PartnerUniversityUri.REL_PATH_ID, PartnerUniversityRelTypes.DELETE_SINGLE_PARTNER_UNIVERSITY,  getAcceptRequestHeader(), "{id}");
+        addLink(PartnerUniversityUri.REL_PATH, PartnerUniversityRelTypes.CREATE_PARTNER_UNIVERSITY, getAcceptRequestHeader());
+        addLink(PartnerUniversityUri.REL_PATH_ID, PartnerUniversityRelTypes.GET_SINGLE_PARTNER_UNIVERSITY, getAcceptRequestHeader(), "{id}");
+        addLink(PartnerUniversityUri.REL_PATH_ID, PartnerUniversityRelTypes.UPDATE_SINGLE_PARTNER_UNIVERSITY, getAcceptRequestHeader(), "{id}");
+        addLink(PartnerUniversityUri.REL_PATH_ID, PartnerUniversityRelTypes.DELETE_SINGLE_PARTNER_UNIVERSITY, getAcceptRequestHeader(), "{id}");
 
         // Module links under a specific Partner University
-        addLink(PartnerUniversityUri.REL_PATH + "/{universityId}/modules", ModuleRelTypes.GET_ALL_MODULES,  getAcceptRequestHeader());
-        addLink(PartnerUniversityUri.REL_PATH + "/{universityId}/modules", ModuleRelTypes.CREATE_MODULE,  getAcceptRequestHeader());
-        addLink(ModuleUri.REL_PATH_ID, ModuleRelTypes.GET_SINGLE_MODULE,  getAcceptRequestHeader(), "{id}");
-        addLink(ModuleUri.REL_PATH_ID, ModuleRelTypes.UPDATE_SINGLE_MODULE,  getAcceptRequestHeader(), "{id}");
-        addLink(ModuleUri.REL_PATH_ID, ModuleRelTypes.DELETE_SINGLE_MODULE,  getAcceptRequestHeader(), "{id}");
+        addLink(PartnerUniversityUri.REL_PATH + "/{universityId}/modules", ModuleRelTypes.GET_ALL_MODULES, getAcceptRequestHeader());
+        addLink(PartnerUniversityUri.REL_PATH + "/{universityId}/modules", ModuleRelTypes.CREATE_MODULE, getAcceptRequestHeader());
+        addLink(ModuleUri.REL_PATH_ID, ModuleRelTypes.GET_SINGLE_MODULE, getAcceptRequestHeader(), "{id}");
+        addLink(ModuleUri.REL_PATH_ID, ModuleRelTypes.UPDATE_SINGLE_MODULE, getAcceptRequestHeader(), "{id}");
+        addLink(ModuleUri.REL_PATH_ID, ModuleRelTypes.DELETE_SINGLE_MODULE, getAcceptRequestHeader(), "{id}");
 
         // Pagination and Sorting Links for Partner Universities
         addLink(PartnerUniversityUri.REL_PATH + "?offset={offset}&size={size}", "self_partner_universities", getAcceptRequestHeader());

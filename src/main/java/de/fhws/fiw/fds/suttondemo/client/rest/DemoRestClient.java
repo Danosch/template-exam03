@@ -22,6 +22,8 @@ public class DemoRestClient extends AbstractRestClient {
     private static final String CREATE_MODULE = "createModule";
     private static final String UPDATE_MODULE = "updateModule";
     private static final String DELETE_MODULE = "deleteModule";
+    private static final String GET_SINGLE_PARTNER_UNIVERSITY = "getSinglePartnerUniversity";
+    private static final String GET_SINGLE_MODULE = "getSingleModule";
 
     private List<PartnerUniversityClientModel> currentPartnerUniversityData;
     private int cursorPartnerUniversityData = 0;
@@ -46,14 +48,14 @@ public class DemoRestClient extends AbstractRestClient {
 
     public void start() throws IOException {
         processResponse(this.partnerUniversityClient.getDispatcher(BASE_URL), (response) -> {
-            System.out.println("Dispatcher started, available links: " + availableLinks());
+            System.out.println("Dispatcher started, available links: " + getAvailableLinks());
         });
     }
 
     public boolean isCreatePartnerUniversityAllowed() {
         boolean allowed = isLinkAvailable(CREATE_PARTNER_UNIVERSITY);
         System.out.println("isCreatePartnerUniversityAllowed: " + allowed);
-        System.out.println("Available links: " + availableLinks());
+        System.out.println("Available links: " + getAvailableLinks());
         return allowed;
     }
 
@@ -86,7 +88,7 @@ public class DemoRestClient extends AbstractRestClient {
     }
 
     public boolean isGetSinglePartnerUniversityAllowed() {
-        boolean allowed = isLinkAvailable(PartnerUniversityUri.REL_PATH_ID);
+        boolean allowed = isLinkAvailable(GET_SINGLE_PARTNER_UNIVERSITY);
         System.out.println("isGetSinglePartnerUniversityAllowed: " + allowed);
         return allowed;
     }
@@ -209,7 +211,7 @@ public class DemoRestClient extends AbstractRestClient {
     }
 
     public boolean isGetSingleModuleAllowed() {
-        boolean allowed = isLinkAvailable(ModuleUri.REL_PATH_ID);
+        boolean allowed = isLinkAvailable(GET_SINGLE_MODULE);
         System.out.println("isGetSingleModuleAllowed: " + allowed);
         return allowed;
     }
@@ -308,14 +310,6 @@ public class DemoRestClient extends AbstractRestClient {
     private long extractPartnerUniversityIdFromModuleUrl(String url) {
         String[] parts = url.split("/");
         return Long.parseLong(parts[parts.length - 3]);
-    }
-
-    public String availableLinks() {
-        StringBuilder builder = new StringBuilder();
-        for (Map.Entry<String, Link> entry : getPossibleNextStates().entrySet()) {
-            builder.append(entry.getKey()).append(" -> ").append(entry.getValue().getUrl()).append("\n");
-        }
-        return builder.toString();
     }
 
     public String getAvailableLinks() {
