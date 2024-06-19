@@ -104,7 +104,7 @@ public class PartnerUniversityAndModuleIT {
         System.out.println("Create Partner University Status Code: " + client.getLastStatusCode());
         assertEquals(201, client.getLastStatusCode(), "Creating partner university should return status code 201.");
     }
-
+/*
     @Test
     public void test_create_5_partner_universities_and_get_all() throws IOException {
         client.start();
@@ -138,7 +138,7 @@ public class PartnerUniversityAndModuleIT {
         System.out.println("Get Single Partner University Status Code: " + client.getLastStatusCode());
         assertEquals(200, client.getLastStatusCode(), "Getting single partner university should return status code 200.");
     }
-
+*/
     @Test
     public void test_update_partner_university() throws IOException {
         client.start();

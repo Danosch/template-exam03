@@ -2,6 +2,7 @@ package de.fhws.fiw.fds.suttondemo.server.api.services;
 
 import de.fhws.fiw.fds.sutton.server.api.serviceAdapters.Exceptions.SuttonWebAppException;
 import de.fhws.fiw.fds.sutton.server.api.services.AbstractJerseyService;
+import de.fhws.fiw.fds.sutton.server.database.results.CollectionModelResult;
 import de.fhws.fiw.fds.suttondemo.server.api.models.PartnerUniversity;
 import de.fhws.fiw.fds.suttondemo.server.api.queries.AllPartnerUniversities;
 import de.fhws.fiw.fds.suttondemo.server.api.states.partneruniversities.*;
@@ -16,14 +17,20 @@ public class PartnerUniversityJerseyService extends AbstractJerseyService {
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response getAllPartnerUniversities(@QueryParam("offset") @DefaultValue("0") int offset,
                                               @QueryParam("size") @DefaultValue("20") int size,
-                                              @QueryParam("sort") @DefaultValue("id") String sort) {
+                                              @QueryParam("sort") @DefaultValue("id") String sort,
+                                              @QueryParam("sortOrder") @DefaultValue("asc") String sortOrder,
+                                              @QueryParam("country") String country,
+                                              @QueryParam("name") String name) {
         try {
-            return new GetAllPartnerUniversities(this.serviceContext, new AllPartnerUniversities<>(offset, size, sort)).execute();
+            AllPartnerUniversities<PartnerUniversity> query = new AllPartnerUniversities<>(offset, size, sort, sortOrder, country, name);
+            CollectionModelResult<PartnerUniversity> result = query.startQuery();
+            return Response.ok(result.getResult()).build();
         } catch (SuttonWebAppException e) {
             throw new WebApplicationException(Response.status(e.getStatus().getCode())
                     .entity(e.getExceptionMessage()).build());
         }
     }
+
 
     @GET
     @Path("{id: \\d+}")
