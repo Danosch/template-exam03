@@ -29,7 +29,7 @@ import de.fhws.fiw.fds.sutton.server.models.AbstractModel;
  * properties and methods to implement the DELETE state.</p>
  *
  * <p>Each extending state class has to define a builder class, which must extend
- * {@link AbstractDeleteState.AbstractDeleteStateBuilder}.</p>
+ * {@link AbstractDeleteStateBuilder}.</p>
  *
  * @param <R> The type of the HTTP response object specific to the REST framework in use.
  * @param <T> The type of the entity to be deleted.
@@ -137,7 +137,7 @@ public abstract class AbstractDeleteState<R, T extends AbstractModel> extends Ab
      */
     protected abstract void defineTransitionLinks();
 
-    public static abstract class AbstractDeleteStateBuilder<R> extends AbstractState.AbstractStateBuilder<R, Void> {
+    public static abstract class AbstractDeleteStateBuilder<R> extends AbstractStateBuilder<R, Void> {
         /**
          * id {@link Long} of the model to be searched in the database in order to be deleted
          */

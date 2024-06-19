@@ -7,8 +7,12 @@ import de.fhws.fiw.fds.sutton.server.database.results.SingleModelResult;
 import de.fhws.fiw.fds.suttondemo.server.api.models.Module;
 import de.fhws.fiw.fds.suttondemo.server.database.DaoFactory;
 import jakarta.ws.rs.core.Response;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class GetSingleModule extends AbstractGetRelationState<Response, Module> {
+    private static final Logger LOGGER = Logger.getLogger(GetSingleModule.class.getName());
+
     public GetSingleModule(ServiceContext serviceContext, long primaryId, long requestedId) {
         super(serviceContext, primaryId, requestedId);
         this.suttonResponse = new JerseyResponse<>(); // Ensure suttonResponse is initialized
@@ -19,8 +23,9 @@ public class GetSingleModule extends AbstractGetRelationState<Response, Module> 
         try {
             return DaoFactory.getInstance().getModuleDao().readById(this.primaryId, this.requestedId);
         } catch (Exception e) {
-            // Log the exception and return a failure result
-            return new SingleModelResult<>(e);
+            // Log the exception and return an empty SingleModelResult
+            LOGGER.log(Level.SEVERE, "Error loading module", e);
+            return new SingleModelResult<>(); // Return an empty result
         }
     }
 

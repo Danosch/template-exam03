@@ -9,7 +9,7 @@ import de.fhws.fiw.fds.sutton.server.models.AbstractModel;
  * functionality to request a collection of sub-resources related to a specific main resource from the database.</p>
  *
  * <p>Each extending state class has to define a builder class, which must extend
- * {@link AbstractGetCollectionRelationState.AbstractGetCollectionRelationStateBuilder}</p>
+ * {@link AbstractGetCollectionRelationStateBuilder}</p>
  *
  * @param <R> The type of the HTTP response object specific to the REST framework in use.
  * @param <T> The type of the entity encapsulated within the body of the HTTP response.

@@ -9,7 +9,7 @@ import de.fhws.fiw.fds.sutton.server.models.AbstractModel;
  * and its primary resource.</p>
  *
  * <p>Each extending state class has to define a builder class, which must extend
- * {@link AbstractPostRelationState.AbstractPostRelationStateBuilder}</p>
+ * {@link AbstractPostRelationStateBuilder}</p>
  *
  * @param <R> The type of the HTTP response object specific to the REST framework in use.
  * @param <T> The type of the entity sent in the HTTP request to be created.

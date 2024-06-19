@@ -31,7 +31,7 @@ import java.net.URI;
  * properties and methods to implement the functionality of fetching a single resource from the database.</p>
  *
  * <p>Each extending state class has to define a builder class, which must extend
- * {@link AbstractGetState.AbstractGetStateBuilder}.</p>
+ * {@link AbstractGetStateBuilder}.</p>
  * @param <R> The type of the HTTP response object specific to the REST framework in use.
  * @param <T> The type of the entity encapsulated within the body of the HTTP response.
  */
@@ -146,7 +146,7 @@ public abstract class AbstractGetState<R, T extends AbstractModel> extends Abstr
         Hyperlinks.addLink(this.suttonResponse, self, "self", getAcceptRequestHeader());
     }
 
-    public static abstract class AbstractGetStateBuilder<R, T extends AbstractModel> extends AbstractState.AbstractStateBuilder<R, T> {
+    public static abstract class AbstractGetStateBuilder<R, T extends AbstractModel> extends AbstractStateBuilder<R, T> {
         /**
          * id {@link Long} of the model to be searched in the database
          */

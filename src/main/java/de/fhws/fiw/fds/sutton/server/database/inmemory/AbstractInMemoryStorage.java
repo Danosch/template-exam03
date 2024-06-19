@@ -93,11 +93,11 @@ public abstract class AbstractInMemoryStorage<T extends AbstractModel> {
 		return this.nextId.getAndIncrement();
 	}
 
-	private Collection<T> clone(final Collection<T> result) {
+	protected Collection<T> clone(final Collection<T> result) {
 		return result.stream().map(e -> clone(e)).collect(Collectors.toList());
 	}
 
-	private T clone(final T result) {
+	protected T clone(final T result) {
 		final T clone = (T) ObjectUtils.cloneIfPossible(result);
 		return clone;
 	}

@@ -9,7 +9,7 @@ import de.fhws.fiw.fds.sutton.server.models.AbstractModel;
  * can be used also to relate an existing sub-resource to an existing primary resource.</p>
  *
  * <p>Each extending state class has to define a builder class, which must extend
- * {@link AbstractPutRelationState.AbstractPutRelationStateBuilder}</p>
+ * {@link AbstractPutRelationStateBuilder}</p>
  *
  * @param <R> The type of the HTTP response object specific to the REST framework in use.
  * @param <T> The type of the entity sent in the HTTP request to perform an update process.

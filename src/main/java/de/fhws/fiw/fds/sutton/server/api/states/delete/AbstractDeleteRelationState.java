@@ -8,7 +8,7 @@ import de.fhws.fiw.fds.sutton.server.models.AbstractModel;
  * and methods to delete relations between main resources and their related sub-resources.
  *
  * <p>Each extending state class has to define a builder class, which must extend
- * {@link AbstractDeleteRelationState.AbstractDeleteRelationStateBuilder}</p>
+ * {@link AbstractDeleteRelationStateBuilder}</p>
  *
  * @param <R> The type of the HTTP response object specific to the REST framework in use.
  * @param <T> The type of the entity to be deleted.

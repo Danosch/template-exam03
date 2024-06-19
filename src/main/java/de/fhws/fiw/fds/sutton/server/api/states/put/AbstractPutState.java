@@ -30,7 +30,7 @@ import java.net.URI;
  * functionality to update a model in the database.</p>
  *
  * <p>Each extending state class has to define a builder class, which must extend
- * {@link AbstractPutState.AbstractPutStateBuilder}</p>
+ * {@link AbstractPutStateBuilder}</p>
  * @param <R> The type of the HTTP response object specific to the REST framework in use.
  * @param <T> The type of the entity sent in the HTTP request to perform an update process.
  */
@@ -174,7 +174,7 @@ public abstract class AbstractPutState<R, T extends AbstractModel> extends Abstr
     }
 
     public static abstract class AbstractPutStateBuilder<R, T extends AbstractModel>
-            extends AbstractState.AbstractStateBuilder<R, Void> {
+            extends AbstractStateBuilder<R, Void> {
         protected long requestedId;
 
         protected T modelToUpdate;

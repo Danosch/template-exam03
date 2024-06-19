@@ -32,7 +32,7 @@ import java.util.Collection;
  * properties to request a collection of resources.</p>
  *
  * <p>Each extending state class has to define a builder class, which must extend
- * {@link AbstractGetCollectionState.AbstractGetCollectionStateBuilder}.</p>
+ * {@link AbstractGetCollectionStateBuilder}.</p>
  * @param <R> The type of the HTTP response object specific to the REST framework in use.
  * @param <T> The type of the entity encapsulated within the body of the HTTP response.
  */

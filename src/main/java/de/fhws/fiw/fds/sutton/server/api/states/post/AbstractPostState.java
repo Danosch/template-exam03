@@ -29,7 +29,7 @@ import java.net.URI;
  * functionality to create a model in the database.</p>
  *
  * <p>Each extending state class has to define a builder class, which must extend
- * {@link AbstractPostState.AbstractPostStateBuilder}</p>
+ * {@link AbstractPostStateBuilder}</p>
  * @param <R> The type of the HTTP response object specific to the REST framework in use.
  * @param <T> The type of the entity sent in the HTTP request to be created.
  */
@@ -107,7 +107,7 @@ public abstract class AbstractPostState<R, T extends AbstractModel> extends Abst
     }
 
     public static abstract class AbstractPostStateBuilder<R, T extends AbstractModel>
-            extends AbstractState.AbstractStateBuilder<R, Void> {
+            extends AbstractStateBuilder<R, Void> {
         protected T modelToCreate;
 
         public AbstractPostStateBuilder<R, T> setModelToCreate(final T modelToCreate) {
