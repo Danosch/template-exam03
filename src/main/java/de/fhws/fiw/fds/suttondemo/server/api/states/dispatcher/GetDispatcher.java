@@ -31,19 +31,5 @@ public class GetDispatcher extends AbstractGetDispatcherState<Response> {
         addLink(ModuleUri.REL_PATH_ID, ModuleRelTypes.GET_SINGLE_MODULE, getAcceptRequestHeader(), "{id}");
         addLink(ModuleUri.REL_PATH_ID, ModuleRelTypes.UPDATE_SINGLE_MODULE, getAcceptRequestHeader(), "{id}");
         addLink(ModuleUri.REL_PATH_ID, ModuleRelTypes.DELETE_SINGLE_MODULE, getAcceptRequestHeader(), "{id}");
-
-        // Pagination and Sorting Links for Partner Universities
-        addLink(PartnerUniversityUri.REL_PATH + "?offset={offset}&size={size}", "self_partner_universities", getAcceptRequestHeader());
-        addLink(PartnerUniversityUri.REL_PATH + "?offset={nextOffset}&size={size}", "next_partner_universities", getAcceptRequestHeader());
-        addLink(PartnerUniversityUri.REL_PATH + "?offset={prevOffset}&size={size}", "prev_partner_universities", getAcceptRequestHeader());
-        addLink(PartnerUniversityUri.REL_PATH + "?sort=name&order=asc", "sort_asc_partner_universities", getAcceptRequestHeader());
-        addLink(PartnerUniversityUri.REL_PATH + "?sort=name&order=desc", "sort_desc_partner_universities", getAcceptRequestHeader());
-
-        // Pagination and Sorting Links for Modules
-        addLink(PartnerUniversityUri.REL_PATH + "/{universityId}/modules?offset={offset}&size={size}", "self_modules_for_university", getAcceptRequestHeader());
-        addLink(PartnerUniversityUri.REL_PATH + "/{universityId}/modules?offset={nextOffset}&size={size}", "next_modules_for_university", getAcceptRequestHeader());
-        addLink(PartnerUniversityUri.REL_PATH + "/{universityId}/modules?offset={prevOffset}&size={size}", "prev_modules_for_university", getAcceptRequestHeader());
-        addLink(PartnerUniversityUri.REL_PATH + "/{universityId}/modules?sort=moduleName&order=asc", "sort_asc_modules_for_university", getAcceptRequestHeader());
-        addLink(PartnerUniversityUri.REL_PATH + "/{universityId}/modules?sort=moduleName&order=desc", "sort_desc_modules_for_university", getAcceptRequestHeader());
     }
 }
