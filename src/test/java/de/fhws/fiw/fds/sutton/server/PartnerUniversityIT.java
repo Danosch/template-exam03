@@ -91,7 +91,6 @@ public class PartnerUniversityIT {
         assertEquals(201, client.getLastStatusCode(), "Creating partner university should return status code 201.");
     }
 
-
     @Test
     public void test_update_partner_university() throws IOException {
         client.start();
@@ -147,7 +146,6 @@ public class PartnerUniversityIT {
         boolean finalUpdatePermission = client.isUpdatePartnerUniversityAllowed();
         logPermission("Final isUpdatePartnerUniversityAllowed", finalUpdatePermission);
     }
-
 
     @Test
     public void test_delete_partner_university() throws IOException {
